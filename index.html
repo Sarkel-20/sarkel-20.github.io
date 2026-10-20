@@ -12,37 +12,39 @@
 <meta name="description" content="Your odds of hitting a futures eval target before the drawdown floor. Gambler's ruin, at zero edge and at your win rate.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,400..800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: one column of rules → results, a number line from floor to target as the page's one picture.
-   Single dark look on purpose: the @Sarkel20 bordeaux charts. */
+   Palette and type of the project dashboard (@Sarkel20 v2): near-black neutral dark, white text, violet accent, rose = loss.
+   Light and dark follow the system. */
 :root {
-  color-scheme: dark;
-  --bg-top: #1C0B1F;
-  --bg: #0E0611;
-  --dots: #2A1630;
-  --panel: #170A1A;
-  --line: #3E2B47;
-  --ink: #F5F2F7;
-  --ink2: #CDBFD6;
-  --muted: #8C7A96;
-  --violet: #B08CFF;
-  --rose: #F0607F;
-  --violet-soft: rgba(176, 140, 255, 0.14);
-  --rose-soft: rgba(240, 96, 127, 0.14);
-  --font-display: "Archivo", "Helvetica Neue", Arial, sans-serif;
-  --font-body: "Archivo", "Helvetica Neue", Arial, sans-serif;
-  --font-num: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --r: 10px;
+  color-scheme: light dark;
+  --bg: #f7f7f8; --panel: #ffffff; --panel2: #f1f0f3; --line: #e2e0e6;
+  --ink: #111014; --ink2: #3d3a42; --muted: #6e6a75;
+  --violet: #5b3fc4; --violet-line: #d6cdf6; --rose: #c8325a;
+  --violet-soft: #efebfc; --rose-soft: #fbe5ec;
+  --font-display: "Inter", system-ui, -apple-system, sans-serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-num: "Inter", system-ui, -apple-system, sans-serif;
+  --font-code: "JetBrains Mono", ui-monospace, monospace;
+  --r: 12px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #09080b; --panel: #121015; --panel2: #1a171e; --line: #28242d;
+  --ink: #ffffff; --ink2: #d5d2da; --muted: #9e99a6;
+  --violet: #9a80f0; --violet-line: #3a2f66; --rose: #f0607f;
+  --violet-soft: #1d1730; --rose-soft: rgba(240, 96, 127, 0.13);
+} }
+:root[data-theme="dark"] {
+  --bg: #09080b; --panel: #121015; --panel2: #1a171e; --line: #28242d;
+  --ink: #ffffff; --ink2: #d5d2da; --muted: #9e99a6;
+  --violet: #9a80f0; --violet-line: #3a2f66; --rose: #f0607f;
+  --violet-soft: #1d1730; --rose-soft: rgba(240, 96, 127, 0.13);
 }
 * { box-sizing: border-box; }
 html { background: var(--bg); }
 body {
   background: var(--bg);
-  background-image:
-    radial-gradient(var(--dots) 1px, transparent 1.2px),
-    linear-gradient(180deg, var(--bg-top) 0%, var(--bg) 520px);
-  background-size: 22px 22px, 100% 100%;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
@@ -57,15 +59,15 @@ a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible
 
 header { display: flex; flex-direction: column; gap: 10px; }
 .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.kicker { font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--violet); }
+.kicker { font-weight: 600; font-size: 11.5px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--violet); }
 .handle { font-weight: 700; font-size: 14px; color: var(--ink2); text-decoration: none; }
 .handle:hover { color: var(--ink); }
-h1 { font-family: var(--font-display); font-stretch: 118%; font-weight: 800; font-size: clamp(30px, 6.4vw, 50px); line-height: 1.06; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+h1 { font-family: var(--font-display); font-weight: 600; font-size: clamp(28px, 5.4vw, 40px); line-height: 1.12; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
 .lede { color: var(--ink2); margin: 0; max-width: 60ch; font-size: 17px; }
 
 form { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 fieldset { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); margin: 0; padding: 16px 16px 18px; display: grid; gap: 14px; min-width: 0; align-content: start; }
-legend { font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); padding: 0 6px; }
+legend { font-weight: 600; font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); padding: 0 6px; }
 .field { display: grid; gap: 6px; min-width: 0; }
 .field label, .field .label { font-size: 14px; font-weight: 600; color: var(--ink2); }
 .hint { font-size: 12.5px; color: var(--muted); font-weight: 400; }
@@ -93,13 +95,13 @@ legend { font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transfo
 .results { display: grid; gap: 16px; }
 .cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .card { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
-.card.edge { border-color: rgba(176, 140, 255, 0.45); }
+.card.edge { border-color: var(--violet); }
 .card-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; flex-wrap: wrap; }
-.card-title { font-weight: 700; font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.card-title { font-weight: 600; font-size: 11.5px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); }
 .chip { font: 600 11.5px/1 var(--font-body); letter-spacing: 0.04em; text-transform: uppercase; padding: 5px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--ink2); white-space: nowrap; }
-.chip.sim { border-color: rgba(240, 96, 127, 0.55); color: var(--rose); }
-.chip.exact { border-color: rgba(176, 140, 255, 0.55); color: var(--violet); }
-.big { font-family: var(--font-display); font-stretch: 110%; font-weight: 800; font-size: clamp(46px, 11vw, 64px); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.chip.sim { border-color: transparent; background: var(--rose-soft); color: var(--rose); }
+.chip.exact { border-color: transparent; background: var(--violet-soft); color: var(--violet); }
+.big { font-family: var(--font-num); font-weight: 600; font-size: clamp(42px, 10vw, 52px); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
 .big small { font-size: 0.42em; font-weight: 700; color: var(--muted); margin-left: 6px; letter-spacing: 0; }
 .stats { display: flex; flex-wrap: wrap; gap: 6px 18px; font-family: var(--font-num); font-size: 13.5px; color: var(--ink2); }
 .stats b { color: var(--ink); font-weight: 600; }
@@ -108,11 +110,6 @@ legend { font-weight: 700; font-size: 12px; letter-spacing: 0.08em; text-transfo
 .assume { margin: 0; font-size: 12.5px; color: var(--muted); font-style: italic; }
 .ref { margin: 0; font-size: 13.5px; color: var(--ink2); border-top: 1px dashed var(--line); padding-top: 10px; }
 .ref b { font-family: var(--font-num); color: var(--violet); font-weight: 600; }
-.card.cost { flex-direction: row; flex-wrap: wrap; align-items: baseline; gap: 10px 28px; }
-.cost-item { display: grid; gap: 2px; }
-.cost-item .v { font-family: var(--font-num); font-size: 24px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
-.cost-item .k { font-size: 12.5px; color: var(--muted); }
-.cost .why { flex-basis: 100%; }
 .err { color: var(--rose); font-size: 14px; margin: 0; }
 .progress { font-size: 12.5px; color: var(--rose); font-family: var(--font-num); }
 
@@ -120,7 +117,7 @@ details { border-top: 1px solid var(--line); padding-top: 16px; }
 summary { cursor: pointer; font-weight: 700; color: var(--ink2); }
 .method { display: grid; gap: 10px; color: var(--ink2); font-size: 14.5px; max-width: 68ch; margin-top: 12px; }
 .method p { margin: 0; }
-.method code { font-family: var(--font-num); font-size: 13px; color: var(--ink); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
+.method code { font-family: var(--font-code); font-size: 12.5px; color: var(--ink); background: var(--panel2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
 
 footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
 footer a { font-weight: 700; text-decoration: none; }
@@ -206,10 +203,6 @@ footer a { font-weight: 700; text-decoration: none; }
           <label for="wr">Win rate <span class="hint">optional</span></label>
           <div class="inbox"><input id="wr" inputmode="decimal" value="52" placeholder="e.g. 52" autocomplete="off"><span class="after">%</span></div>
         </div>
-        <div class="field">
-          <label for="price">Eval price <span class="hint">optional</span></label>
-          <div class="inbox"><span>$</span><input id="price" inputmode="decimal" value="150" placeholder="e.g. 150" autocomplete="off"></div>
-        </div>
       </div>
       <span class="hint" id="beHint">Break-even win rate at 1R: 50%.</span>
     </fieldset>
@@ -239,11 +232,6 @@ footer a { font-weight: 700; text-decoration: none; }
         <p class="assume" id="eAssume"></p>
       </article>
     </div>
-    <article class="card cost" id="cCost" hidden>
-      <div class="cost-item"><span class="k">Evals bought per pass, zero edge</span><span class="v" id="cZ">–</span></div>
-      <div class="cost-item" id="cEWrap"><span class="k" id="cEk">Evals bought per pass, your win rate</span><span class="v" id="cE">–</span></div>
-      <p class="why" id="cWhy"></p>
-    </article>
     <span class="progress" id="prog" hidden></span>
   </section>
 
@@ -255,8 +243,7 @@ footer a { font-weight: 700; text-decoration: none; }
       <p><b>Fixed floor.</b> This is the gambler's ruin. Your balance moves by <code>+RR × risk</code> or <code>−risk</code> each trade. You pass at the target and fail at the floor. At zero edge with no overshoot, the odds are just distances: <code>drawdown / (drawdown + target)</code>. With 1R trades the closed form is <code>(1 − s^a) / (1 − s^N)</code>, where <code>s = losses/wins</code>, <code>a</code> = trades to the floor and <code>N</code> = trades from floor to target. For any other RR the page solves the exact Markov chain on every balance you can reach. A last trade can cross the line, so the result can sit a little under the distance ratio.</p>
       <p><b>Trailing floor.</b> The floor follows your best balance up, at the close (EOD) or after every trade (intraday), until it reaches the level where it stops. There is no simple formula, so the page runs a Monte Carlo in your browser. Each path also runs against a fixed floor on the same trades, so the trailing result can never come out above the fixed one. The intraday version only counts closed trades. Real intraday rules also count open profit, so your real odds are a bit lower.</p>
       <p><b>Zero edge</b> means your average trade makes $0 after costs. With RR trades that is a win rate of <code>1 / (1 + RR)</code>. Enter your win rate net of commissions and slippage.</p>
-      <p><b>Not modeled:</b> daily loss limits, consistency rules, minimum days, time limits, resets and activation fees. Each of those lowers the odds or raises the cost.</p>
-      <p><b>Evals per pass.</b> Each attempt is independent, so on average you buy <code>1 / P</code> evals to pass once and spend <code>price / P</code>.</p>
+      <p><b>Not modeled:</b> daily loss limits, consistency rules, minimum days and time limits. Each of those lowers your odds.</p>
     </div>
   </details>
 
@@ -410,7 +397,7 @@ var Engine = (function () {
   function schedule() { clearTimeout(timer); timer = setTimeout(run, 250); }
 
   function read() {
-    var o = { target: num('target'), dd: num('dd'), risk: num('risk'), rr: num('rr'), wr: num('wr'), price: num('price'), lock: num('lock'), tpd: num('tpd') };
+    var o = { target: num('target'), dd: num('dd'), risk: num('risk'), rr: num('rr'), wr: num('wr'), lock: num('lock'), tpd: num('tpd') };
     var bad = function (v) { return v === null || !isFinite(v) || v <= 0; };
     if (bad(o.target)) return 'Enter a profit target above $0.';
     if (bad(o.dd)) return 'Enter a drawdown above $0.';
@@ -419,7 +406,6 @@ var Engine = (function () {
     if (Math.round(o.rr * 100) < 1) return 'Enter a reward : risk of at least 0.01.';
     if ((o.dd + o.target) / o.risk > 4000) return 'Risk per trade is too small for these distances (over 4,000 trades from floor to target). Raise it.';
     if (o.wr !== null && (!isFinite(o.wr) || o.wr <= 0 || o.wr >= 100)) return 'Win rate must be between 0 and 100%.';
-    if (o.price !== null && (!isFinite(o.price) || o.price < 0)) return 'Eval price must be $0 or more.';
     if (mode !== 'fixed' && o.lock !== null && (!isFinite(o.lock) || o.lock < -o.dd)) return 'The trailing stop level must be above the starting floor.';
     if (mode === 'eod' && (bad(o.tpd) || o.tpd > 100)) return 'Trades per day must be between 1 and 100.';
     o.tpd = Math.round(o.tpd || 1);
@@ -440,15 +426,6 @@ var Engine = (function () {
     var s = '<span>≈ <b>' + Math.round(t).toLocaleString('en-US') + '</b> trades to an outcome</span>';
     if (mode === 'eod') s += '<span>≈ <b>' + Math.max(1, Math.round(t / tpd)).toLocaleString('en-US') + '</b> days</span>';
     return s;
-  }
-
-  function costCard(o, pz, pe) {
-    if (o.price === null) { $('cCost').hidden = true; return; }
-    $('cCost').hidden = false;
-    $('cZ').textContent = pz > 0 ? (1 / pz).toFixed(1) + ' · ' + fmt$(o.price / pz) : '∞';
-    if (pe === null) { $('cEWrap').hidden = true; }
-    else { $('cEWrap').hidden = false; $('cEk').textContent = 'Evals bought per pass, ' + o.wr + '% win rate'; $('cE').textContent = pe > 0 ? (1 / pe).toFixed(1) + ' · ' + fmt$(o.price / pe) : '∞'; }
-    $('cWhy').textContent = 'Each attempt is independent, so one pass costs price ÷ odds on average. Resets and activation fees not included.';
   }
 
   function dock(pz, pe) {
@@ -497,7 +474,6 @@ var Engine = (function () {
         $('eAssume').textContent = assume.replace('Zero edge, n', 'N');
       }
       dock(fz.prob, fe ? fe.prob : null);
-      costCard(o, fz.prob, fe ? fe.prob : null);
       return;
     }
 
@@ -536,7 +512,6 @@ var Engine = (function () {
         }
       });
       dock(estimate(jobs[0]).p, jobs[1] ? estimate(jobs[1]).p : null);
-      costCard(o, estimate(jobs[0]).p, jobs[1] ? estimate(jobs[1]).p : null);
     }
     var ch = new MessageChannel(), queued = null;
     ch.port1.onmessage = function () { var f = queued; queued = null; if (f) f(); };
