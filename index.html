@@ -14,29 +14,34 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
 /* Home page of sarkel-20.github.io. Same palette and type as the calculator (@Sarkel20 v2).
-   Sections: who → proof → free tool → 1:1 → contact. Light and dark follow the system. */
+   Sections: who → proof → free tool → 1:1 → contact. Dark by default (black, violet accents), light on the header button. */
 :root {
-  color-scheme: light dark;
-  --bg: #f7f7f8; --panel: #ffffff; --panel2: #f1f0f3; --line: #e2e0e6;
-  --ink: #111014; --ink2: #3d3a42; --muted: #6e6a75;
-  --violet: #5b3fc4; --violet-line: #d6cdf6; --violet-soft: #efebfc;
+  color-scheme: dark;
+  --bg: #08070a; --panel: #1a1530; --panel2: #251d45; --line: #4a3b8f;
+  --ink: #ffffff; --ink2: #e6e1f2; --muted: #c2bad9;
+  --violet: #b9a3ff; --violet-line: #5d49b0; --violet-soft: #2a1f57;
+  --grad: linear-gradient(90deg, #a68cff, #e4dbff);
+  --shadow: 0 1px 0 rgba(255, 255, 255, .03) inset, 0 8px 28px rgba(0, 0, 0, .35);
+  --hero: linear-gradient(135deg, #2a1680 0%, #4b2fc0 45%, #7f5cf2 100%);
+  --glow: rgba(110, 76, 240, .28);
   --font: "Inter", system-ui, -apple-system, sans-serif;
-  --r: 12px;
+  --r: 14px;
 }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
-  --bg: #09080b; --panel: #121015; --panel2: #1a171e; --line: #28242d;
-  --ink: #ffffff; --ink2: #d5d2da; --muted: #9e99a6;
-  --violet: #9a80f0; --violet-line: #3a2f66; --violet-soft: #1d1730;
-} }
-:root[data-theme="dark"] {
-  --bg: #09080b; --panel: #121015; --panel2: #1a171e; --line: #28242d;
-  --ink: #ffffff; --ink2: #d5d2da; --muted: #9e99a6;
-  --violet: #9a80f0; --violet-line: #3a2f66; --violet-soft: #1d1730;
+:root[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f5f3fb; --panel: #ffffff; --panel2: #efecf8; --line: #e4dff2;
+  --ink: #15112a; --ink2: #3b3655; --muted: #6c6788;
+  --violet: #5b3fc4; --violet-line: #d3c8f7; --violet-soft: #f0ebff;
+  --grad: linear-gradient(90deg, #4b2fc0, #8a68f5);
+  --shadow: 0 1px 2px rgba(40, 24, 110, .05), 0 6px 20px rgba(40, 24, 110, .06);
+  --hero: linear-gradient(135deg, #3f25a8 0%, #5b3fc4 45%, #8a68f5 100%);
+  --glow: rgba(91, 63, 196, .14);
 }
 * { box-sizing: border-box; }
-html { background: var(--bg); }
+html { background: var(--bg); scroll-behavior: smooth; }
 body {
-  margin: 0; background: var(--bg); color: var(--ink);
+  margin: 0; color: var(--ink);
+  background: radial-gradient(900px 520px at 85% -140px, var(--glow), transparent 70%), radial-gradient(700px 480px at 0% 30%, rgba(110, 76, 240, .08), transparent 70%), var(--bg); background-attachment: fixed;
   font-family: var(--font); font-size: 16px; line-height: 1.55;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
@@ -46,11 +51,20 @@ body {
 a { color: var(--violet); }
 a:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
 
-header { display: flex; flex-direction: column; gap: 12px; }
+header { display: flex; flex-direction: column; gap: 14px; background: var(--hero); color: #fff; border-radius: 22px; padding: clamp(22px, 5vw, 38px); box-shadow: 0 16px 50px var(--glow); }
+header .kicker { color: #ddd3ff; }
+header .handle { color: #fff; }
+header .lede { color: rgba(255, 255, 255, .86); }
+header .nav a { color: #fff; background: rgba(255, 255, 255, .13); padding: 6px 12px; border-radius: 999px; }
+header .nav a:hover { background: rgba(255, 255, 255, .24); }
+header .btn.primary { background: #fff; color: #3f25a8; border-color: #fff; }
+header .btn.ghost { color: #fff; border-color: rgba(255, 255, 255, .7); }
+.theme { font: 600 12.5px var(--font); color: #fff; background: rgba(255, 255, 255, .13); border: 0; border-radius: 999px; padding: 5px 11px; cursor: pointer; }
+.right { display: flex; gap: 10px; align-items: center; }
 .brand { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 .kicker { font-weight: 600; font-size: 11.5px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--violet); }
 .handle { font-weight: 700; font-size: 14px; color: var(--ink2); text-decoration: none; }
-.handle:hover { color: var(--ink); }
+.handle:hover { text-decoration: underline; }
 h1 { font-weight: 600; font-size: clamp(30px, 5.6vw, 44px); line-height: 1.1; margin: 0; letter-spacing: -0.015em; text-wrap: balance; }
 .lede { color: var(--ink2); margin: 0; max-width: 62ch; font-size: 17.5px; }
 .cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
@@ -59,25 +73,26 @@ h1 { font-weight: 600; font-size: clamp(30px, 5.6vw, 44px); line-height: 1.1; ma
 .btn.ghost { color: var(--violet); background: transparent; }
 
 section { display: flex; flex-direction: column; gap: 14px; }
-h2 { font-weight: 600; font-size: 22px; margin: 0; letter-spacing: -0.01em; }
+h2::before { content: ''; display: block; width: 34px; height: 4px; border-radius: 2px; background: var(--grad); margin-bottom: 10px; }
+h2 { font-weight: 700; font-size: 24px; margin: 0; letter-spacing: -0.01em; }
 .sub { color: var(--muted); margin: 0; font-size: 14.5px; max-width: 64ch; }
 
 .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 @media (max-width: 560px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; min-width: 0; }
-.stat b { display: block; font-size: clamp(20px, 5vw, 26px); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+.stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; min-width: 0;  box-shadow: var(--shadow);}
+.stat b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; display: block; font-size: clamp(20px, 5vw, 26px); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
 .stat span { font-size: 13px; color: var(--muted); }
 
 .proofs { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.proof { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
-.proof img { width: 100%; height: auto; aspect-ratio: 1080 / 772; object-fit: contain; display: block; background: #1a1a1d; }
+.proof { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column;  box-shadow: var(--shadow);}
+.proof img { width: 100%; height: auto; aspect-ratio: 1080 / 772; object-fit: contain; display: block; background: var(--panel2); }
 .proof .meta { padding: 10px 14px 12px; display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
 .proof .meta b { font-variant-numeric: tabular-nums; }
 .proof .meta span { color: var(--muted); }
 .proof:hover { border-color: var(--violet-line); }
 
 .trades { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
-.trade { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
+.trade { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column;  box-shadow: var(--shadow);}
 .trade img { width: 100%; height: 220px; object-fit: cover; object-position: center; display: block; background: #0f0f10; }
 .trade .meta { padding: 12px 16px 16px; }
 .trade .meta b { font-size: 15px; }
@@ -85,24 +100,35 @@ h2 { font-weight: 600; font-size: 22px; margin: 0; letter-spacing: -0.01em; }
 .trade:hover { border-color: var(--violet-line); }
 @media (max-width: 560px) { .trades { grid-template-columns: 1fr; } }
 .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 8px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 8px;  box-shadow: var(--shadow);}
+.card { border-top: 2px solid var(--violet-line); background: linear-gradient(180deg, var(--violet-soft), var(--panel) 55%); }
+.card h3 { color: var(--violet); }
+.stat { background: linear-gradient(180deg, var(--panel2), var(--panel)); }
+.card:hover, .stat:hover { border-color: var(--violet-line); }
 .card h3 { margin: 0; font-size: 17px; font-weight: 600; }
 .card p { margin: 0; color: var(--ink2); font-size: 15px; }
 .card a.more { font-weight: 600; text-decoration: none; margin-top: auto; padding-top: 6px; }
 
-.offer { background: var(--violet-soft); border: 1px solid var(--violet-line); border-radius: var(--r); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.offer { background: linear-gradient(160deg, var(--violet-soft), var(--panel) 70%); border: 1px solid var(--violet-line); border-radius: var(--r); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
 .offer ul { margin: 0; padding-left: 20px; color: var(--ink2); display: grid; gap: 6px; }
 .offer p { margin: 0; color: var(--ink2); }
 
 .months { display: grid; gap: 6px; }
 .mrow { display: grid; grid-template-columns: 74px 1fr 92px; gap: 10px; align-items: center; font-size: 14px; }
 .mrow .lab { color: var(--muted); }
-.mrow .bar { height: 10px; border-radius: 5px; background: var(--violet); min-width: 2px; }
+.mrow .bar { height: 12px; border-radius: 6px; background: var(--grad); box-shadow: 0 0 14px var(--glow); min-width: 2px; }
 .mrow .val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
-.nav { display: flex; gap: 16px; flex-wrap: wrap; font-size: 14px; font-weight: 600; }
+.nav { display: flex; gap: 8px; flex-wrap: wrap; font-size: 14px; font-weight: 600; }
 .nav a { text-decoration: none; }
 .h3 { margin: 10px 0 0; font-size: 16px; font-weight: 600; }
 .note { font-size: 13px; color: var(--muted); margin: 0; }
+.more-btn { align-self: center; font: 600 14.5px var(--font); color: var(--violet); background: var(--panel); border: 1px solid var(--violet-line); border-radius: 999px; padding: 10px 20px; cursor: pointer; box-shadow: var(--shadow); }
+.more-btn:hover { background: var(--violet-soft); }
+.explain { background: linear-gradient(135deg, #34257a, #241a52); border: 1px solid #7a62e0; border-left: 4px solid #b9a3ff; border-radius: var(--r); padding: 14px 18px; font-size: 14.5px; color: #f1edff; }
+:root[data-theme="light"] .explain summary { color: var(--ink); }
+:root[data-theme="light"] .explain { background: var(--violet-soft); border-color: var(--violet-line); border-left-color: var(--violet); color: var(--ink2); }
+.explain summary { font-weight: 700; color: #fff; cursor: pointer; }
+.explain p { margin: 10px 0 0; }
 footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
 footer a { font-weight: 700; text-decoration: none; }
 </style>
@@ -113,7 +139,7 @@ footer a { font-weight: 700; text-decoration: none; }
   <header>
     <div class="brand">
       <span class="kicker">Sarkel · Prop Firm Math</span>
-      <a class="handle" href="https://x.com/Sarkel20" target="_blank" rel="noopener">@Sarkel20</a>
+      <span class="right"><button class="theme" id="theme" type="button">Light</button><a class="handle" href="https://x.com/Sarkel20" target="_blank" rel="noopener">@Sarkel20</a></span>
     </div>
     <h1>I do the math on prop firm rules.</h1>
     <p class="lede">NQ futures trader, order flow and options. I trade funded accounts and model every rule that decides whether you get paid: drawdown floors, trailing, consistency, payout policies. Here is what I've been paid, the free tool I built, and how to talk to me.</p>
@@ -126,19 +152,20 @@ footer a { font-weight: 700; text-decoration: none; }
 
   <section id="payouts">
     <h2>Payouts</h2>
-    <p class="sub">Payout certificates issued by the firms, newest first. Net of eval fees: I left out the payouts that only paid back my evals and activations, so the total is what I kept. My first name and the certificate IDs are masked, nothing else is edited.</p>
+    <p class="sub">Payout certificates issued by the firms, largest first. Net of eval fees: I left out the payouts that only paid back my evals and activations, so the total is what I kept. My first name and the certificate IDs are masked, nothing else is edited.</p>
     <div class="stats">
       <div class="stat"><b>~$3,500</b><span>spent on evals</span></div>
       <div class="stat"><b id="total">$0</b><span>paid out on top, net of eval fees</span></div>
-      <div class="stat"><b id="multiple">–</b><span>net return on what I spent on evals</span></div>
+      <div class="stat"><b id="multiple">–</b><span>net return on what I spent on evals (<span id="mult">–</span>)</span></div>
       <div class="stat"><b id="count">0</b><span>payouts since <span id="since">–</span></span></div>
     </div>
     <p class="note" id="netline"></p>
     <p class="note" id="chartlabel">Last 3 months</p>
     <div class="months" id="months"></div>
     <p class="sub">I started trading the model in October. Before that, prop firms were a side thing next to my live account.</p>
-    <h3 class="h3">All certificates</h3>
+    <h3 class="h3">Certificates</h3>
     <div class="proofs" id="proofs"></div>
+    <button class="more-btn" id="more" type="button"></button>
   </section>
 
   <section id="method">
@@ -150,6 +177,11 @@ footer a { font-weight: 700; text-decoration: none; }
       <div class="stat"><b>81</b><span>account plans, plus payout variants</span></div>
       <div class="stat"><b>1,140</b><span>automated tests on the model</span></div>
     </div>
+    <details class="explain" open>
+      <summary>Where the 190 billion comes from</summary>
+      <p>For every setup the model optimizes (an account plan, an edge level, a reward-to-risk, a pass rate, a payout policy), it searches the best risk for each zone of account state: 13 zones, or 26 when the policy changes after the first payout. Every candidate size is tested on 20,000 simulated paths, zone by zone, for one to three full passes. The winner is then re-measured on 60,000 fresh paths.</p>
+      <p>I only counted the result files whose code I've checked: 103,669 optimized policies. With a single pass everywhere, that's 190 billion+ paths. With three passes everywhere, about 700 billion. The exact dynamic-programming computations aren't simulations, so they're not in the count.</p>
+    </details>
     <div class="cards">
       <div class="card"><h3>An account is an option</h3><p>You pay a small fee for the right to lose the firm's money and keep a share of what's above a threshold. That contract has a value of its own, before any skill. I price it: trailing floors and their lock, consistency caps, daily limits, minimum days, payout buffers and caps, splits, eval prices, resets, activation fees.</p></div>
       <div class="card"><h3>Every state has a value</h3><p>An account isn't just its balance. Distance to the floor, where the trailing stops, days traded, payouts already taken: together they're the state. For each state the model computes what the account is still worth in expected dollars: its residual value. That's what tells you when to push, when to protect, when to let it go.</p></div>
@@ -565,7 +597,8 @@ var PAYOUTS = [
   var first = list.length ? new Date(list[list.length - 1].date + 'T12:00:00') : null;
   document.getElementById('total').textContent = fmt(total);
   var SPENT = 3500;
-  document.getElementById('multiple').textContent = '+' + Math.round(total / SPENT * 100) + '% (' + (total / SPENT).toFixed(1) + '×)';
+  document.getElementById('multiple').textContent = '+' + Math.round(total / SPENT * 100) + '%';
+  document.getElementById('mult').textContent = (total / SPENT).toFixed(1) + '×';
   document.getElementById('count').textContent = list.length;
   document.getElementById('since').textContent = first ? first.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '–';
   document.getElementById('netline').textContent = 'Firms: ' + Object.keys(firms).sort().join(', ') + '. Purdia certificates show the amount before its 90% split: my share of the ' + fmt(purdia) + ' is ' + fmt(purdia * 0.9) + '. After Purdia\'s 10% cut the net return is +' + Math.round((total - purdia * 0.1) / SPENT * 100) + '%. Topstep proofs link to Topstep\'s own verification page (scan the QR code).';
@@ -585,7 +618,30 @@ var PAYOUTS = [
     var d = new Date(p.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
     return '<a class="proof" href="' + p.file + '" target="_blank" rel="noopener"><img src="' + p.file + '" alt="' + p.firm + ' payout certificate, ' + fmt(p.amount) + ', ' + d + '" width="' + p.w + '" height="' + p.h + '" loading="lazy"><div class="meta"><b>' + fmt(p.amount) + '</b><span>' + p.firm + ' · ' + d + '</span></div></a>';
   };
-  grid.innerHTML = list.map(card).join('');
+  // Grid: largest first (newest first on ties); totals and the chart above use the date-sorted list.
+  var big = list.slice().sort(function (a, b) { return b.amount - a.amount || (a.date < b.date ? 1 : -1); });
+  var SHOWN = 6, open = false, more = document.getElementById('more');
+  var draw = function () {
+    grid.innerHTML = (open ? big : big.slice(0, SHOWN)).map(card).join('');
+    more.textContent = open ? 'Show fewer' : 'Show all ' + list.length + ' certificates';
+  };
+  more.addEventListener('click', function () {
+    open = !open; draw();
+    if (!open) grid.scrollIntoView({ block: 'nearest' });
+  });
+  draw();
+  // Dark by default; the header button switches to light and remembers it (per browser).
+  var root = document.documentElement, btn = document.getElementById('theme');
+  var setTheme = function (t) {
+    if (t === 'light') root.setAttribute('data-theme', 'light'); else root.removeAttribute('data-theme');
+    btn.textContent = t === 'light' ? 'Dark' : 'Light';
+  };
+  try { setTheme(localStorage.getItem('theme')); } catch (e) { setTheme(null); }
+  btn.addEventListener('click', function () {
+    var t = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    setTheme(t);
+    try { localStorage.setItem('theme', t); } catch (e) {}
+  });
 })();
 </script>
 </body>
