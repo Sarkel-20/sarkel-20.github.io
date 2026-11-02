@@ -3,259 +3,904 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Sarkel · Prop Firm Math</title>
+<title>Payout Solver · by Sarkel</title>
 <meta name="description" content="NQ futures trader. I model prop firm rules: odds of passing, trailing floors, payout policies. 41 payout certificates, free tools, 1:1 by DM.">
-<meta property="og:title" content="Sarkel · Prop Firm Math">
+<meta property="og:title" content="Payout Solver · by Sarkel">
 <meta property="og:description" content="The math on prop firm rules, real payouts, and a free eval odds calculator.">
-<meta name="twitter:card" content="summary">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://payoutsolver.com/">
+<meta property="og:image" content="https://payoutsolver.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://payoutsolver.com/og.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <meta name="twitter:site" content="@Sarkel20">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 <style>
-/* Home page of sarkel-20.github.io. Same palette and type as the calculator (@Sarkel20 v2).
-   Sections: who → proof → free tool → 1:1 → contact. Dark by default (black, violet accents), light on the header button. */
+/* MOCKUP v2 layout (02/11). Same palette, fonts and background as home.html; new layout and hierarchy.
+   Bilingual: every text exists twice, data-l="en" / data-l="fr"; <html lang> decides which one shows. */
 :root {
   color-scheme: dark;
-  --bg: #08070a; --panel: #1a1530; --panel2: #251d45; --line: #4a3b8f;
-  --ink: #ffffff; --ink2: #e6e1f2; --muted: #c2bad9;
-  --violet: #b9a3ff; --violet-line: #5d49b0; --violet-soft: #2a1f57;
-  --grad: linear-gradient(90deg, #a68cff, #e4dbff);
-  --shadow: 0 1px 0 rgba(255, 255, 255, .03) inset, 0 8px 28px rgba(0, 0, 0, .35);
-  --hero: linear-gradient(135deg, #2a1680 0%, #4b2fc0 45%, #7f5cf2 100%);
+  --bg: #05050b;
+  --panel: rgba(255, 255, 255, .045); --panel2: rgba(255, 255, 255, .07); --deep: rgba(255, 255, 255, .03);
+  --line: rgba(165, 140, 255, .26); --line2: rgba(175, 150, 255, .42);
+  --ink: #ffffff; --ink2: #ece8f6; --muted: #d2cbe6; --dim: #ada5c6;
+  --violet: #b7a2ff; --violet-soft: rgba(139, 108, 255, .14); --on-violet: #0b0820;
+  --blue: #5aaaff; --rose: #ff7b98; --good: #5fe3a6;
+  --accent: linear-gradient(90deg, #8b6cff, #4f9dff);
+  --chip: linear-gradient(90deg, #a68cff, #6fb1ff);
+  --title: linear-gradient(90deg, #ffffff 0%, #ece6ff 55%, #c4b3ff 100%);
+  --shadow: 0 1px 0 rgba(255, 255, 255, .05) inset, 0 20px 50px rgba(0, 0, 0, .35);
   --glow: rgba(110, 76, 240, .28);
   --font: "Inter", system-ui, -apple-system, sans-serif;
-  --r: 14px;
+  --r: 20px; --maxw: 1200px; --gut: max(16px, env(safe-area-inset-left, 0px));
+  /* path colours, read by the canvas script */
+  --p-mid: rgba(175, 150, 255, .30); --p-up: rgba(90, 170, 255, .78); --p-down: rgba(255, 120, 155, .55);
+  --p-up-line: rgba(80, 160, 255, .55); --p-down-line: rgba(255, 123, 152, .42); --p-w: 1.3; --mask-mid: .3;
+  background: radial-gradient(900px 600px at 10% 0%, rgba(124, 92, 255, .32), transparent 65%), radial-gradient(800px 600px at 100% 60%, rgba(64, 140, 255, .18), transparent 65%), radial-gradient(700px 500px at 40% 110%, rgba(170, 90, 255, .16), transparent 65%), #05050b;
+  background-attachment: fixed; scroll-behavior: smooth;
 }
-:root[data-theme="light"] {
-  color-scheme: light;
-  --bg: #f5f3fb; --panel: #ffffff; --panel2: #efecf8; --line: #e4dff2;
-  --ink: #15112a; --ink2: #3b3655; --muted: #6c6788;
-  --violet: #5b3fc4; --violet-line: #d3c8f7; --violet-soft: #f0ebff;
-  --grad: linear-gradient(90deg, #4b2fc0, #8a68f5);
-  --shadow: 0 1px 2px rgba(40, 24, 110, .05), 0 6px 20px rgba(40, 24, 110, .06);
-  --hero: linear-gradient(135deg, #3f25a8 0%, #5b3fc4 45%, #8a68f5 100%);
-  --glow: rgba(91, 63, 196, .14);
-}
+@media (min-width: 760px) { :root { --gut: 32px; } }
+[hidden] { display: none !important; }
+html[lang="fr"] [data-l="en"], html[lang="en"] [data-l="fr"] { display: none !important; }
 * { box-sizing: border-box; }
-html { background: var(--bg); scroll-behavior: smooth; }
-body {
-  margin: 0; color: var(--ink);
-  background: radial-gradient(900px 520px at 85% -140px, var(--glow), transparent 70%), radial-gradient(700px 480px at 0% 30%, rgba(110, 76, 240, .08), transparent 70%), var(--bg); background-attachment: fixed;
-  font-family: var(--font); font-size: 16px; line-height: 1.55;
-  padding-left: max(16px, env(safe-area-inset-left, 0px));
-  padding-right: max(16px, env(safe-area-inset-right, 0px));
-  padding-block: 28px 40px;
-}
-.wrap { max-width: 880px; margin: 0 auto; display: flex; flex-direction: column; gap: 44px; }
+body { margin: 0; color: var(--ink); font-family: var(--font); font-size: 16px; line-height: 1.55; overflow-x: clip; -webkit-font-smoothing: antialiased; }
 a { color: var(--violet); }
-a:focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+p { margin: 0; }
+img { max-width: 100%; height: auto; }
+.container { max-width: calc(var(--maxw) + 2 * var(--gut)); margin: 0 auto; padding: 0 var(--gut); }
+section, header { scroll-margin-top: 76px; }
+.sec { padding: clamp(72px, 9vw, 120px) 0 0; }
+.num { font-variant-numeric: tabular-nums; }
+.glass { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); box-shadow: var(--shadow); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
 
-header { display: flex; flex-direction: column; gap: 14px; background: var(--hero); color: #fff; border-radius: 22px; padding: clamp(22px, 5vw, 38px); box-shadow: 0 16px 50px var(--glow); }
-header .kicker { color: #ddd3ff; }
-header .handle { color: #fff; }
-header .lede { color: rgba(255, 255, 255, .86); }
-header .nav a { color: #fff; background: rgba(255, 255, 255, .13); padding: 6px 12px; border-radius: 999px; }
-header .nav a:hover { background: rgba(255, 255, 255, .24); }
-header .btn.primary { background: #fff; color: #3f25a8; border-color: #fff; }
-header .btn.ghost { color: #fff; border-color: rgba(255, 255, 255, .7); }
-.theme { font: 600 12.5px var(--font); color: #fff; background: rgba(255, 255, 255, .13); border: 0; border-radius: 999px; padding: 5px 11px; cursor: pointer; }
-.right { display: flex; gap: 10px; align-items: center; }
-.brand { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.kicker { font-weight: 600; font-size: 11.5px; letter-spacing: 0.11em; text-transform: uppercase; color: var(--violet); }
-.handle { font-weight: 700; font-size: 14px; color: var(--ink2); text-decoration: none; }
-.handle:hover { text-decoration: underline; }
-h1 { font-weight: 600; font-size: clamp(30px, 5.6vw, 44px); line-height: 1.1; margin: 0; letter-spacing: -0.015em; text-wrap: balance; }
-.lede { color: var(--ink2); margin: 0; max-width: 62ch; font-size: 17.5px; }
-.cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
-.btn { display: inline-block; padding: 11px 18px; border-radius: 999px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid var(--violet); }
-.btn.primary { background: var(--violet); color: #fff; }
-.btn.ghost { color: var(--violet); background: transparent; }
+/* ---------- background paths ---------- */
+#paths { position: fixed; inset: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, #000 0, #000 12%, rgba(0, 0, 0, var(--mask-mid)) 30%, rgba(0, 0, 0, var(--mask-mid)) 70%, #000 88%);
+  mask-image: linear-gradient(90deg, #000 0, #000 12%, rgba(0, 0, 0, var(--mask-mid)) 30%, rgba(0, 0, 0, var(--mask-mid)) 70%, #000 88%); }
 
-section { display: flex; flex-direction: column; gap: 14px; }
-h2::before { content: ''; display: block; width: 34px; height: 4px; border-radius: 2px; background: var(--grad); margin-bottom: 10px; }
-h2 { font-weight: 700; font-size: 24px; margin: 0; letter-spacing: -0.01em; }
-.sub { color: var(--muted); margin: 0; font-size: 14.5px; max-width: 64ch; }
+/* ---------- top bar ---------- */
+.topbar { position: sticky; top: 0; z-index: 30; background: rgba(5, 5, 11, .62); backdrop-filter: blur(14px) saturate(140%); -webkit-backdrop-filter: blur(14px) saturate(140%); border-bottom: 1px solid rgba(165, 140, 255, .18); }
+.tb-in { display: flex; align-items: center; gap: 8px; height: 64px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 700; font-size: 16px; color: var(--ink); text-decoration: none; white-space: nowrap; margin-right: auto; }
+.brand svg { width: 28px; height: 28px; flex: none; }
+.brand > span { color: var(--ink); }
+.brand .sub { color: var(--violet); }
+.nav { display: none; gap: 2px; margin: 0 auto; }
+.nav a { color: var(--muted); text-decoration: none; font-weight: 600; font-size: 14px; padding: 8px 11px; border-radius: 999px; white-space: nowrap; transition: color .15s, background .15s; }
+.nav a:hover { color: var(--ink); background: rgba(255, 255, 255, .05); }
+.nav a.on { color: #fff; background: rgba(139, 108, 255, .22); }
+.tb-btn { font: 600 14px var(--font); color: var(--ink); background: rgba(255, 255, 255, .05); border: 1px solid var(--line); border-radius: 999px; height: 38px; padding: 0 14px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; }
+.tb-btn:hover { border-color: var(--line2); }
+.tb-btn.follow { background: #fff; border-color: #fff; color: #000; }
+.tb-btn.cta { background: var(--accent); border-color: transparent; color: #fff; }
+.tb-btn.icon { padding: 0 12px; }
+.xlogo { width: 15px; height: 15px; fill: currentColor; flex: none; }
+.tb-menu { position: relative; }
+.tb-drop { position: absolute; right: 0; top: calc(100% + 10px); min-width: 260px; background: rgba(16, 13, 34, .97); border: 1px solid var(--line2); border-radius: 16px; padding: 6px; box-shadow: 0 24px 60px rgba(0, 0, 0, .55); display: none; }
+.tb-drop.open { display: block; }
+.tb-drop a { display: flex; justify-content: space-between; align-items: baseline; padding: 11px 12px; border-radius: 10px; color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; white-space: nowrap; }
+.tb-drop a:hover, .tb-drop a.on { background: var(--violet-soft); color: var(--violet); }
+.tb-drop a small { color: var(--muted); font-weight: 500; margin-left: 16px; }
+.bars { width: 16px; height: 10px; display: inline-grid; align-content: space-between; }
+.bars i { display: block; height: 2px; border-radius: 1px; background: currentColor; }
+@media (max-width: 759px) { .brand .sub, .tb-btn .ftxt, .tb-btn.cta { display: none; } .tb-btn.follow { padding: 0 12px; } }
+@media (min-width: 1000px) { .nav { display: flex; } .tb-menu { display: none; } .brand { margin-right: 0; } }
+@media (min-width: 1000px) and (max-width: 1239px) { .brand .sub, .tb-btn .ftxt { display: none; } .tb-btn.follow { padding: 0 12px; } }
 
-.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
-@media (max-width: 560px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-.stat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 12px 14px; min-width: 0;  box-shadow: var(--shadow);}
-.stat b { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; display: block; font-size: clamp(20px, 5vw, 26px); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
-.stat span { font-size: 13px; color: var(--muted); }
+/* ---------- hero ---------- */
+.hero { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); gap: clamp(32px, 5vw, 72px); align-items: center; padding-top: clamp(40px, 7vw, 96px); }
+@media (max-width: 939px) { .hero { grid-template-columns: 1fr; } }
+.pill { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #ddd3ff; background: rgba(255, 255, 255, .05); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 10px; }
+.pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px rgba(90, 170, 255, .18), 0 0 12px var(--blue); }
+.hero-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+h1 { font-weight: 800; font-size: clamp(42px, 6.4vw, 80px); line-height: 1.0; margin: 0; letter-spacing: -0.035em; text-wrap: balance;
+  background: linear-gradient(90deg, #ffffff 0%, #d4c6ff 55%, #8fc3ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .06em; }
+.lede { color: var(--ink2); max-width: 58ch; font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.6; }
+.cta-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 9px; height: 50px; padding: 0 22px; border-radius: 999px; font-weight: 700; font-size: 15.5px; text-decoration: none; border: 1px solid transparent; white-space: nowrap; transition: transform .15s, box-shadow .15s; }
+.btn:hover { transform: translateY(-1px); }
+.btn.primary { background: var(--accent); color: #fff; box-shadow: 0 10px 34px rgba(110, 120, 255, .45); }
+.btn.primary:hover { box-shadow: 0 14px 40px rgba(110, 120, 255, .6); }
+.btn.x { background: #fff; color: #000; }
+.btn.ghost { color: #fff; border-color: rgba(255, 255, 255, .35); background: rgba(255, 255, 255, .03); }
+.btn.ghost:hover { border-color: rgba(255, 255, 255, .7); }
+.btn .xlogo { width: 16px; height: 16px; }
+.btn svg.ar { width: 18px; height: 18px; }
+.strip { display: flex; flex-wrap: wrap; gap: 0; margin-top: 10px; border-top: 1px solid rgba(165, 140, 255, .18); padding-top: 22px; }
+.strip > div { padding: 0 24px; border-left: 1px solid rgba(165, 140, 255, .2); }
+.strip > div:first-child { padding-left: 0; border-left: 0; }
+.strip b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; background: var(--title); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.strip > div > span { color: var(--muted); font-size: 13.5px; }
+@media (max-width: 520px) { .strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } .strip > div { padding: 0 10px; } .strip b { font-size: 22px; } .strip > div > span { font-size: 12.5px; display: block; line-height: 1.35; margin-top: 2px; } }
 
-.proofs { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
-.proof { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column;  box-shadow: var(--shadow);}
-.proof img { width: 100%; height: auto; aspect-ratio: 1080 / 772; object-fit: contain; display: block; background: var(--panel2); }
-.proof .meta { padding: 10px 14px 12px; display: flex; justify-content: space-between; gap: 8px; font-size: 14px; }
-.proof .meta b { font-variant-numeric: tabular-nums; }
-.proof .meta span { color: var(--muted); }
-.proof:hover { border-color: var(--violet-line); }
+/* proof card */
+.proofcard-wrap { position: relative; padding-top: 92px; min-width: 0; }
+.fan { position: absolute; top: 0; right: 2%; width: 80%; height: 200px; pointer-events: none; }
+.fan img { position: absolute; top: 0; width: 62%; border-radius: 12px; box-shadow: 0 22px 50px rgba(0, 0, 0, .6); filter: brightness(.9) saturate(.9); border: 1px solid rgba(255, 255, 255, .5); }
+.fan img:nth-child(1) { left: 0; transform: rotate(-3deg) translateY(18px); }
+.fan img:nth-child(2) { left: 19%; transform: rotate(-1deg) translateY(0); }
+.fan img:nth-child(3) { right: 0; transform: rotate(3deg) translateY(16px); }
+.proofcard { position: relative; z-index: 1; padding: clamp(22px, 2.6vw, 30px); border-radius: 26px; background: linear-gradient(165deg, rgba(42, 30, 92, .88), rgba(14, 12, 32, .9) 60%); border: 1px solid rgba(175, 150, 255, .45); box-shadow: 0 40px 100px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 255, 255, .04) inset; backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); display: flex; flex-direction: column; gap: 18px; }
+.proofcard::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; padding: 1px; background: linear-gradient(140deg, rgba(166, 140, 255, .9), rgba(79, 157, 255, .3) 40%, transparent 70%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none; }
+.pc-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.pc-lab { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--violet); }
+.pc-live { display: inline-flex; align-items: center; gap: 7px; font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.pc-live i { width: 7px; height: 7px; border-radius: 50%; background: var(--good); box-shadow: 0 0 10px var(--good); }
+.pc-total b { display: block; font-size: clamp(46px, 5.4vw, 66px); font-weight: 800; letter-spacing: -0.035em; line-height: 1; color: #fff; font-variant-numeric: tabular-nums; padding-bottom: 4px; }
+.pc-total span { color: var(--ink2); font-size: 14.5px; }
+.spark { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 5px; align-items: end; height: 56px; }
+.spark i { display: block; border-radius: 4px 4px 2px 2px; background: rgba(183, 162, 255, .3); min-height: 3px; }
+.spark i.on { background: var(--accent); box-shadow: 0 0 18px rgba(110, 120, 255, .55); }
+.spark i.zero { background: rgba(183, 162, 255, .12); }
+.spark-l { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); margin-top: -10px; }
+.pc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pc-stats div { background: rgba(255, 255, 255, .045); border: 1px solid rgba(175, 150, 255, .22); border-radius: 14px; padding: 12px 14px; }
+.pc-stats b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.pc-stats span { color: var(--muted); font-size: 13px; line-height: 1.35; display: block; }
+.pc-list h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.pc-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 9px 0; border: 0; border-top: 1px solid rgba(175, 150, 255, .14); background: none; color: inherit; font: inherit; cursor: zoom-in; text-align: left; }
+.pc-row img { width: 46px; height: 33px; object-fit: cover; object-position: top left; border-radius: 5px; flex: none; border: 1px solid rgba(255, 255, 255, .3); }
+.pc-row b { font-size: 16px; font-variant-numeric: tabular-nums; }
+.pc-row span { margin-left: auto; color: var(--muted); font-size: 13.5px; }
+.pc-row:hover b { color: var(--violet); }
+.pc-all { font-weight: 700; font-size: 14.5px; text-decoration: none; display: inline-flex; gap: 6px; align-items: center; }
+@media (max-width: 939px) { .proofcard-wrap { max-width: 560px; width: 100%; } }
+@media (max-width: 520px) { .proofcard-wrap { padding-top: 64px; } .fan { height: 150px; right: 1%; width: 92%; } }
 
-.trades { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
-.trade { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column;  box-shadow: var(--shadow);}
-.trade img { width: 100%; height: 220px; object-fit: cover; object-position: center; display: block; background: #0f0f10; }
-.trade .meta { padding: 12px 16px 16px; }
-.trade .meta b { font-size: 15px; }
-.trade .meta p { margin: 6px 0 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
-.trade:hover { border-color: var(--violet-line); }
-@media (max-width: 560px) { .trades { grid-template-columns: 1fr; } }
-.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r); padding: 18px; display: flex; flex-direction: column; gap: 8px;  box-shadow: var(--shadow);}
-.card { border-top: 2px solid var(--violet-line); background: linear-gradient(180deg, var(--violet-soft), var(--panel) 55%); }
-.card h3 { color: var(--violet); }
-.stat { background: linear-gradient(180deg, var(--panel2), var(--panel)); }
-.card:hover, .stat:hover { border-color: var(--violet-line); }
-.card h3 { margin: 0; font-size: 17px; font-weight: 600; }
-.card p { margin: 0; color: var(--ink2); font-size: 15px; }
-.card a.more { font-weight: 600; text-decoration: none; margin-top: auto; padding-top: 6px; }
+/* ---------- section heads (same style as the live site) ---------- */
+.sh { display: flex; flex-direction: column; gap: 14px; margin-bottom: clamp(28px, 3.5vw, 44px); max-width: 920px; }
+h2 { font-weight: 800; font-size: clamp(30px, 4vw, 48px); margin: 0; letter-spacing: -0.025em; line-height: 1.12; text-wrap: balance; background: var(--title); -webkit-background-clip: text; background-clip: text; color: transparent; }
+h2::before { content: ''; display: inline-block; vertical-align: middle; width: 40px; height: 3px; border-radius: 3px; margin: 0 16px 6px 0; background: linear-gradient(90deg, #8b6cff, #4f9dff); }
+h2 .k { background: linear-gradient(90deg, #a48bff, #5aa8ff); -webkit-background-clip: text; background-clip: text; color: transparent; -webkit-text-fill-color: transparent; }
+h2 .sep { color: rgba(196, 179, 255, .45); -webkit-text-fill-color: rgba(196, 179, 255, .45); font-weight: 600; margin: 0 .28em; }
+@media (max-width: 600px) { h2::before { display: block; margin: 0 0 14px; } }
+.lead2 { font-size: clamp(18px, 1.9vw, 22px); color: var(--ink); font-weight: 600; letter-spacing: -0.01em; line-height: 1.4; }
+.sub { color: var(--muted); font-size: 15.5px; max-width: 74ch; }
+.eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 12.5px; font-weight: 700; letter-spacing: .16em; text-transform: uppercase; color: var(--violet); }
+.eyebrow::before { content: ''; width: 22px; height: 2px; border-radius: 2px; background: linear-gradient(90deg, #8b6cff, #4f9dff); }
+.note { font-size: 13.5px; color: var(--muted); }
+.tag { display: inline-flex; align-self: flex-start; font-size: 11.5px; font-weight: 800; letter-spacing: .07em; text-transform: uppercase; color: var(--on-violet); background: var(--chip); border-radius: 8px; padding: 4px 9px; }
+.tag.dim { background: rgba(255, 255, 255, .07); color: var(--muted); border: 1px solid var(--line); }
+.tag.live { background: var(--good); color: #062418; }
+.link { font-weight: 700; font-size: 15px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
+.link:hover { text-decoration: underline; text-underline-offset: 4px; }
 
-.offer { background: linear-gradient(160deg, var(--violet-soft), var(--panel) 70%); border: 1px solid var(--violet-line); border-radius: var(--r); padding: 20px; display: flex; flex-direction: column; gap: 12px; }
-.offer ul { margin: 0; padding-left: 20px; color: var(--ink2); display: grid; gap: 6px; }
-.offer p { margin: 0; color: var(--ink2); }
+/* ---------- two lanes ---------- */
+.lanes { display: grid; grid-template-columns: minmax(0, 1fr) 64px minmax(0, 1fr); align-items: stretch; }
+.lane { padding: clamp(22px, 3vw, 34px); display: flex; flex-direction: column; gap: 16px; border-radius: 24px; min-width: 0; position: relative; overflow: hidden; }
+.lane::after { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 3px; }
+.lane.live { background: linear-gradient(170deg, rgba(95, 227, 166, .1), rgba(255, 255, 255, .03) 45%); border-color: rgba(95, 227, 166, .38); }
+.lane.live::after { background: linear-gradient(90deg, #5fe3a6, rgba(95, 227, 166, 0)); }
+.lane.prop { background: linear-gradient(170deg, rgba(139, 108, 255, .22), rgba(79, 157, 255, .05) 55%); border-color: rgba(175, 150, 255, .55); box-shadow: 0 30px 80px rgba(70, 50, 180, .25); }
+.lane.prop::after { background: var(--accent); }
+.lane-k { font-size: 13px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+.lane.live .lane-k { color: var(--good); }
+.lane.prop .lane-k { color: var(--violet); }
+.lane-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
+.lane .big { font-size: clamp(32px, 3.6vw, 44px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; }
+.lane > p { color: var(--ink2); font-size: 16px; }
+.how { display: grid; gap: 0; border-top: 1px solid rgba(95, 227, 166, .2); }
+.how > div { align-content: start; display: grid; grid-template-columns: 32px 1fr; gap: 2px 12px; padding: 12px 0; border-bottom: 1px solid rgba(95, 227, 166, .14); }
+.how em { grid-row: span 2; font-style: normal; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-size: 13px; font-weight: 800; color: var(--good); border: 1px solid rgba(95, 227, 166, .45); background: rgba(95, 227, 166, .08); }
+.how b { font-size: 15.5px; }
+.how span { color: var(--muted); font-size: 14px; line-height: 1.45; }
+.how-h { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); margin-bottom: -6px; }
+.callout { margin-top: auto; display: flex; gap: 12px; align-items: flex-start; border-radius: 14px; padding: 13px 15px; font-size: 14.5px; font-weight: 600; line-height: 1.45; }
+.callout svg { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+.lane.live .callout { background: rgba(95, 227, 166, .08); border: 1px dashed rgba(95, 227, 166, .45); color: #d7f8e8; }
+.lane.live .callout svg { color: var(--good); }
+.lane.prop .callout { background: rgba(139, 108, 255, .16); border: 1px solid rgba(175, 150, 255, .5); color: #fff; }
+.lane.prop .callout svg { color: var(--violet); }
+.cmp { display: grid; gap: 14px; background: rgba(5, 5, 11, .35); border: 1px solid rgba(175, 150, 255, .22); border-radius: 16px; padding: 16px 18px; }
+.cmp-h { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.cmp-row { display: grid; gap: 7px; }
+.cmp-top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.cmp-top .t { font-size: 13.5px; color: var(--muted); font-weight: 600; }
+.cmp-top b { font-size: 22px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+.cmp-top b small { font-size: 13px; color: var(--muted); font-weight: 600; letter-spacing: 0; margin-left: 4px; }
+.cmp-bar { height: 12px; border-radius: 6px; background: rgba(255, 255, 255, .05); overflow: hidden; }
+.cmp-bar i { display: block; height: 100%; border-radius: 6px; background: rgba(183, 162, 255, .45); width: 0; transition: width 1.2s cubic-bezier(.2, .7, .2, 1); }
+.cmp-row.on .cmp-bar i { background: var(--accent); box-shadow: 0 0 18px rgba(110, 120, 255, .6); }
+.cmp-row.on .cmp-top b { background: linear-gradient(90deg, #fff, #c9d9ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.cmp-row .s { font-size: 13.5px; color: var(--muted); }
+.divider { position: relative; display: grid; place-items: center; }
+.divider::before { content: ''; position: absolute; top: 18px; bottom: 18px; left: 50%; border-left: 1px dashed rgba(196, 179, 255, .4); }
+.divider span { position: relative; writing-mode: vertical-rl; transform: rotate(180deg); font-size: 11.5px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); background: #0b0918; border: 1px solid var(--line); border-radius: 999px; padding: 14px 7px; }
+.story-foot { margin-top: 22px; font-size: 15.5px; color: var(--ink2); max-width: 86ch; }
+.story-foot b { color: var(--ink); }
+@media (max-width: 899px) {
+  .lanes { grid-template-columns: 1fr; }
+  .divider { height: 56px; }
+  .divider::before { top: 0; bottom: 0; }
+  .divider span { writing-mode: horizontal-tb; transform: none; padding: 6px 14px; }
+}
 
-.months { display: grid; gap: 6px; }
-.mrow { display: grid; grid-template-columns: 74px 1fr 92px; gap: 10px; align-items: center; font-size: 14px; }
-.mrow .lab { color: var(--muted); }
-.mrow .bar { height: 12px; border-radius: 6px; background: var(--grad); box-shadow: 0 0 14px var(--glow); min-width: 2px; }
-.mrow .val { text-align: right; font-variant-numeric: tabular-nums; font-weight: 600; }
-.nav { display: flex; gap: 8px; flex-wrap: wrap; font-size: 14px; font-weight: 600; }
-.nav a { text-decoration: none; }
-.h3 { margin: 10px 0 0; font-size: 16px; font-weight: 600; }
-.note { font-size: 13px; color: var(--muted); margin: 0; }
-.more-btn { align-self: center; font: 600 14.5px var(--font); color: var(--violet); background: var(--panel); border: 1px solid var(--violet-line); border-radius: 999px; padding: 10px 20px; cursor: pointer; box-shadow: var(--shadow); }
+/* ---------- payouts ---------- */
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 899px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.stat { padding: 18px 20px; min-width: 0; }
+.stat b { display: block; color: var(--ink); font-size: clamp(26px, 3vw, 36px); font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; line-height: 1.15; }
+.stat > span { font-size: 14px; color: var(--muted); }
+.stat.hl { background: linear-gradient(160deg, rgba(139, 108, 255, .26), rgba(79, 157, 255, .06)); border-color: rgba(175, 150, 255, .5); }
+.pay-grid { display: grid; grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr); gap: 12px; margin-top: 12px; }
+@media (max-width: 899px) { .pay-grid { grid-template-columns: 1fr; } }
+.panel { padding: clamp(18px, 2.4vw, 26px); display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.panel h3 { margin: 0; font-size: 17px; font-weight: 700; color: var(--ink); }
+.panel p { color: var(--ink2); font-size: 15px; }
+.ph { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 7px; vertical-align: -1px; background: rgba(183, 162, 255, .45); }
+.legend i.on { background: var(--accent); }
+.mchart { --bh: 210px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: clamp(4px, 1.2vw, 14px); align-items: end; padding-top: 30px; position: relative; }
+.mc { display: flex; flex-direction: column; align-items: center; gap: 8px; position: relative; min-width: 0; }
+.mbw { height: var(--bh); width: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; border-bottom: 1px solid rgba(175, 150, 255, .25); }
+.mv { font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--ink2); white-space: nowrap; }
+.mb { width: min(100%, 58px); height: calc(var(--v) * (var(--bh) - 28px)); min-height: 3px; border-radius: 8px 8px 3px 3px; background: linear-gradient(180deg, rgba(196, 179, 255, .55), rgba(139, 108, 255, .22)); }
+.mc.zero .mb { background: rgba(183, 162, 255, .12); }
+.mc.zero .mv { color: var(--dim); font-weight: 500; }
+.mc.on .mb { background: linear-gradient(180deg, #8fc3ff, #8b6cff); box-shadow: 0 0 34px rgba(110, 120, 255, .55); }
+.mc.on .mv { color: #fff; font-size: 15px; }
+.ml { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.mc.first-on::before { content: ''; position: absolute; left: calc(-1 * clamp(2px, .6vw, 7px)); top: -30px; bottom: 26px; border-left: 1px dashed rgba(143, 195, 255, .7); }
+.mtag { position: absolute; top: -32px; right: calc(100% + clamp(6px, 1vw, 12px)); font-size: 11.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #8fc3ff; white-space: nowrap; }
+@media (max-width: 600px) { .mchart { --bh: 170px; } .mv { font-size: 10.5px; } .mc.on .mv { font-size: 12px; } .ml { font-size: 10.5px; } .mb { border-radius: 5px 5px 2px 2px; } }
+.read p + p { color: var(--muted); }
+.octfig { display: flex; flex-direction: column; gap: 6px; padding-bottom: 18px; margin-bottom: 4px; border-bottom: 1px solid rgba(175, 150, 255, .18); }
+.octfig b { font-size: clamp(38px, 4vw, 52px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; background: linear-gradient(90deg, #fff, #8fc3ff); -webkit-background-clip: text; background-clip: text; color: transparent; font-variant-numeric: tabular-nums; margin-top: 6px; }
+.octfig > span:not(.tag) { color: var(--muted); font-size: 14.5px; }
+.read .big { font-size: 15.5px; color: var(--ink); }
+.certs-h { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin: clamp(36px, 4vw, 52px) 0 16px; flex-wrap: wrap; }
+.certs-h h3 { margin: 0; font-size: clamp(20px, 2vw, 24px); font-weight: 800; letter-spacing: -0.015em; }
+.proofs { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+@media (max-width: 520px) { .proofs { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } }
+.proof { border-radius: 16px; overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; background: var(--panel); border: 1px solid var(--line); box-shadow: var(--shadow); cursor: zoom-in; transition: transform .2s, border-color .2s, box-shadow .2s; }
+.proof:hover { transform: translateY(-3px); border-color: var(--line2); box-shadow: 0 26px 60px rgba(0, 0, 0, .5), 0 0 0 1px rgba(175, 150, 255, .2); }
+.proof img { width: 100%; height: auto; aspect-ratio: 1080 / 772; object-fit: contain; display: block; background: rgba(255, 255, 255, .06); }
+.proof .meta { padding: 10px 14px 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.proof .meta b { font-size: 17px; font-variant-numeric: tabular-nums; }
+.proof .meta span { color: var(--muted); font-size: 13px; white-space: nowrap; }
+@media (max-width: 520px) { .proof .meta { padding: 8px 10px 10px; flex-direction: column; gap: 0; } .proof .meta b { font-size: 15.5px; } .proof .meta span { font-size: 12px; } }
+.more-btn { display: flex; margin: 22px auto 0; font: 600 15px var(--font); color: var(--violet); background: rgba(255, 255, 255, .04); border: 1px solid var(--line2); border-radius: 999px; padding: 12px 24px; cursor: pointer; }
 .more-btn:hover { background: var(--violet-soft); }
-.explain { background: linear-gradient(135deg, #34257a, #241a52); border: 1px solid #7a62e0; border-left: 4px solid #b9a3ff; border-radius: var(--r); padding: 14px 18px; font-size: 14.5px; color: #f1edff; }
-:root[data-theme="light"] .explain summary { color: var(--ink); }
-:root[data-theme="light"] .explain { background: var(--violet-soft); border-color: var(--violet-line); border-left-color: var(--violet); color: var(--ink2); }
-.explain summary { font-weight: 700; color: #fff; cursor: pointer; }
-.explain p { margin: 10px 0 0; }
-footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; font-size: 13.5px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 16px; }
-footer a { font-weight: 700; text-decoration: none; }
+
+/* lightbox */
+.lb { position: fixed; inset: 0; z-index: 60; background: rgba(4, 3, 10, .88); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 64px 16px 24px; }
+.lb.open { display: flex; }
+.lb figure { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 14px; max-width: min(960px, 100%); }
+.lb img { max-width: 100%; max-height: calc(100vh - 170px); border-radius: 14px; box-shadow: 0 40px 120px rgba(0, 0, 0, .7); display: block; background: #fff; }
+.lb figcaption { display: flex; gap: 14px; align-items: baseline; color: var(--muted); font-size: 14px; }
+.lb figcaption b { color: #fff; font-size: 20px; font-variant-numeric: tabular-nums; }
+.lb-btn { position: absolute; width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line2); background: rgba(20, 16, 40, .85); color: #fff; font: 600 20px var(--font); cursor: pointer; display: grid; place-items: center; }
+.lb-btn:hover { background: rgba(139, 108, 255, .35); }
+.lb-close { top: 14px; right: 14px; }
+.lb-prev { left: 14px; top: 50%; transform: translateY(-50%); }
+.lb-next { right: 14px; top: 50%; transform: translateY(-50%); }
+@media (max-width: 700px) { .lb-prev, .lb-next { top: auto; bottom: 14px; transform: none; } .lb { padding-bottom: 76px; } }
+
+/* ---------- method (bento) ---------- */
+.thesis { padding: clamp(22px, 3.4vw, 40px); display: grid; gap: 22px; border-left: 4px solid #8b6cff; }
+.thesis .big { font-size: clamp(26px, 3.4vw, 42px); font-weight: 800; line-height: 1.12; letter-spacing: -0.025em; text-wrap: balance; }
+.thesis .big em { font-style: normal; background: linear-gradient(90deg, #a68cff, #8fc3ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.vs { display: grid; grid-template-columns: minmax(0, 1fr) 36px minmax(0, 1fr) 36px minmax(0, .85fr); gap: 8px; align-items: stretch; }
+@media (max-width: 899px) { .vs { grid-template-columns: 1fr; } .vs .arrow { height: 26px; } .vs .arrow svg { transform: rotate(90deg); } }
+.vs .box { border-radius: 14px; padding: 14px 16px; font-size: 15px; display: flex; gap: 10px; align-items: flex-start; color: var(--ink2); }
+.vs .box b { display: block; font-size: 16px; color: var(--ink); }
+.vs .no { background: rgba(255, 123, 152, .08); border: 1px solid rgba(255, 123, 152, .4); }
+.vs .no .mk { color: var(--rose); }
+.vs .yes { background: rgba(90, 170, 255, .09); border: 1px solid rgba(90, 170, 255, .45); }
+.vs .yes .mk { color: var(--blue); }
+.vs .eq { background: var(--accent); color: #fff; border: 0; box-shadow: 0 12px 34px rgba(110, 120, 255, .35); }
+.vs .eq b { font-size: 19px; color: #fff; }
+.vs .eq span { color: rgba(255, 255, 255, .88); }
+.mk { font-size: 20px; font-weight: 800; line-height: 1.1; flex: none; }
+.arrow { display: grid; place-items: center; color: var(--violet); }
+.arrow svg { width: 26px; height: 26px; }
+.bento { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 12px; margin-top: 12px; }
+.bento > * { min-width: 0; }
+.s12 { grid-column: span 12; } .s7 { grid-column: span 7; } .s5 { grid-column: span 5; } .s4 { grid-column: span 4; } .s8 { grid-column: span 8; }
+@media (max-width: 899px) { .s7, .s5, .s4, .s8 { grid-column: span 12; } }
+.tile { padding: clamp(18px, 2.4vw, 26px); display: flex; flex-direction: column; gap: 12px; }
+.tile h3 { margin: 0; font-size: 18px; font-weight: 700; }
+.intro { font-size: clamp(16.5px, 1.6vw, 19px); color: var(--ink2); max-width: 80ch; }
+.intro b { color: var(--ink); }
+.pipe { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; position: relative; margin-top: 8px; }
+.pipe::before { content: ''; position: absolute; left: 12.5%; right: 12.5%; top: 26px; height: 2px; background: linear-gradient(90deg, rgba(139, 108, 255, .2), #8b6cff 50%, #4f9dff); }
+.step { position: relative; display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 0 6px; }
+.step .n { width: 54px; height: 54px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; font-weight: 800; color: #fff; background: #120e2a; border: 1px solid rgba(175, 150, 255, .55); box-shadow: 0 0 0 6px rgba(5, 5, 11, .9); }
+.step.hot .n { background: var(--accent); border-color: transparent; box-shadow: 0 0 0 6px rgba(5, 5, 11, .9), 0 0 30px rgba(110, 120, 255, .7); }
+.step .lab { font-size: 12.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: var(--violet); margin-top: 8px; }
+.step h4 { margin: 0; font-size: 17px; font-weight: 700; }
+.step p { font-size: 14.5px; color: var(--muted); max-width: 26ch; }
+@media (max-width: 760px) {
+  .pipe { grid-template-columns: 1fr; gap: 18px; }
+  .pipe::before { left: 26px; right: auto; top: 26px; bottom: 26px; width: 2px; height: auto; background: linear-gradient(180deg, rgba(139, 108, 255, .3), #8b6cff 50%, #4f9dff); }
+  .step { display: grid; grid-template-columns: 54px 1fr; text-align: left; align-items: start; gap: 2px 16px; padding: 0; }
+  .step .n { grid-row: span 3; }
+  .step .lab { margin-top: 2px; }
+}
+.chart svg { width: 100%; height: auto; display: block; }
+.chart .ax { stroke: rgba(175, 150, 255, .35); stroke-width: 2; }
+.chart .curve { stroke: url(#cg); stroke-width: 4; fill: none; }
+.chart .area { fill: url(#ag); }
+.chart .floor { fill: var(--rose); }
+.chart .target { fill: var(--blue); }
+.chart .dash { stroke: var(--ink2); stroke-width: 1.5; stroke-dasharray: 5 5; }
+.chart .dot { fill: #fff; stroke: #8b6cff; stroke-width: 4; }
+.chart text { fill: var(--ink2); font: 600 15px var(--font); }
+.chart text.small { fill: var(--muted); font-size: 13.5px; font-weight: 500; }
+.chart text.lb { font-weight: 800; }
+.chart text.r { fill: var(--rose); } .chart text.g { fill: var(--blue); } .chart text.v { fill: var(--violet); }
+.stages { display: grid; gap: 0; position: relative; }
+.stages > div { display: grid; grid-template-columns: 22px 1fr; gap: 2px 14px; padding: 12px 0; position: relative; }
+.stages > div::before { content: ''; grid-row: span 2; width: 12px; height: 12px; border-radius: 50%; margin: 5px 0 0 5px; background: #8b6cff; box-shadow: 0 0 0 4px rgba(139, 108, 255, .2); }
+.stages > div:nth-child(2)::before { background: #6d86ff; }
+.stages > div:nth-child(3)::before { background: #4f9dff; box-shadow: 0 0 0 4px rgba(79, 157, 255, .2); }
+.stages > div:not(:last-child)::after { content: ''; position: absolute; left: 10.5px; top: 30px; bottom: -8px; width: 1px; background: rgba(175, 150, 255, .35); }
+.stages b { font-size: 16px; }
+.stages span { color: var(--muted); font-size: 14.5px; }
+.bignums { display: grid; gap: 0; }
+.bignums > div { padding: 14px 0; border-top: 1px solid rgba(175, 150, 255, .16); }
+.bignums > div:first-of-type { border-top: 0; padding-top: 4px; }
+.bignums b { display: block; font-size: clamp(36px, 4vw, 50px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.05; background: linear-gradient(90deg, #fff, #c4b3ff); -webkit-background-clip: text; background-clip: text; color: transparent; font-variant-numeric: tabular-nums; }
+.bignums > div > span { color: var(--muted); font-size: 14.5px; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 560px) { .cards { grid-template-columns: 1fr; } }
+.card { padding: 20px; display: flex; flex-direction: column; gap: 8px; }
+.card h4 { margin: 0; font-size: 17px; font-weight: 700; color: var(--ink); }
+.card p { color: var(--muted); font-size: 14.5px; }
+.card .tag { margin-bottom: 4px; }
+
+/* ---------- why me + coaching ---------- */
+.why { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 1099px) { .why { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .why { grid-template-columns: 1fr; } }
+.wt { padding: 22px; display: flex; flex-direction: column; gap: 10px; position: relative; overflow: hidden; }
+.wt::before { content: ''; position: absolute; left: 0; top: 0; right: 0; height: 2px; background: var(--accent); opacity: .8; }
+.wt .i { font-size: 13px; font-weight: 800; letter-spacing: .1em; color: var(--violet); font-variant-numeric: tabular-nums; }
+.wt h4 { margin: 0; font-size: clamp(19px, 1.7vw, 22px); font-weight: 800; line-height: 1.25; letter-spacing: -0.01em; }
+.wt p { color: var(--ink2); font-size: 16px; line-height: 1.55; }
+.wt { padding: 26px 24px; }
+.wt.no h4 { color: #ffd1dc; }
+.wt.no::before { background: linear-gradient(90deg, #ff7b98, rgba(255, 123, 152, 0)); }
+.offer { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); padding: clamp(22px, 3.4vw, 44px); border-radius: 28px; background: linear-gradient(150deg, rgba(139, 108, 255, .22), rgba(14, 11, 30, .7) 55%, rgba(79, 157, 255, .1)); border: 1px solid rgba(175, 150, 255, .5); box-shadow: 0 40px 110px rgba(60, 40, 170, .28); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+@media (max-width: 899px) { .offer { grid-template-columns: 1fr; } }
+.offer-l { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.offer .lead { font-size: clamp(19px, 2vw, 24px); color: var(--ink); font-weight: 700; letter-spacing: -0.015em; line-height: 1.35; }
+.who { color: var(--ink2); font-weight: 500; border-left: 3px solid #8b6cff; padding-left: 14px; font-size: 15.5px; }
+.ol-h { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
+.items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .items { grid-template-columns: 1fr; } }
+.item { align-content: start; display: grid; grid-template-columns: 22px 1fr; gap: 2px 10px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(175, 150, 255, .22); border-radius: 14px; padding: 13px 14px; font-size: 14px; color: var(--muted); }
+.item svg { width: 18px; height: 18px; color: var(--blue); grid-row: span 2; margin-top: 2px; }
+.item b { color: var(--ink); font-size: 15px; }
+.item.wide { grid-column: 1 / -1; }
+.offer-r { display: flex; flex-direction: column; gap: 18px; background: rgba(5, 5, 11, .45); border: 1px solid rgba(175, 150, 255, .28); border-radius: 22px; padding: clamp(18px, 2.4vw, 28px); min-width: 0; }
+.offer-r h3 { margin: 0; font-size: 18px; }
+.hiw { display: grid; gap: 0; }
+.hiw > div { display: grid; grid-template-columns: 40px 1fr; gap: 2px 14px; padding: 12px 0; position: relative; }
+.hiw em { grid-row: span 2; font-style: normal; width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; font-weight: 800; font-size: 15px; background: var(--chip); color: var(--on-violet); position: relative; z-index: 1; }
+.hiw > div:not(:last-child)::after { content: ''; position: absolute; left: 17.5px; top: 48px; bottom: -12px; width: 1px; background: rgba(175, 150, 255, .4); }
+.hiw b { font-size: 15.5px; }
+.hiw span { color: var(--muted); font-size: 14.5px; }
+.btn.big { height: 56px; font-size: 16.5px; width: 100%; }
+.spots { color: var(--ink2); font-size: 14.5px; text-align: center; }
+.spots b { color: #fff; }
+
+/* ---------- trades carousel ---------- */
+.trades-h { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; flex-wrap: wrap; margin-bottom: clamp(24px, 3vw, 36px); }
+.trades-h .sh { margin-bottom: 0; }
+.car-nav { display: flex; gap: 8px; }
+@media (max-width: 600px) { .car-nav { display: none; } }
+.car-nav button { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line2); background: rgba(255, 255, 255, .04); color: #fff; cursor: pointer; display: grid; place-items: center; }
+.car-nav button:hover:not(:disabled) { background: var(--violet-soft); }
+.car-nav button:disabled { opacity: .35; cursor: default; }
+.car-nav svg { width: 18px; height: 18px; }
+.car-nav .prev svg { transform: rotate(180deg); }
+.track { display: flex; gap: 16px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth; padding-bottom: 6px; scrollbar-width: none; overscroll-behavior-x: contain; }
+.track::-webkit-scrollbar { display: none; }
+.trade { flex: 0 0 min(560px, 86%); scroll-snap-align: start; border-radius: 20px; overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; background: var(--panel); border: 1px solid rgba(95, 227, 166, .25); box-shadow: var(--shadow); transition: border-color .2s; }
+.trade:hover { border-color: rgba(95, 227, 166, .55); }
+.trade img { width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: cover; object-position: center; display: block; background: #0f0f10; }
+.trade .meta { padding: 16px 20px 20px; display: flex; flex-direction: column; gap: 6px; }
+.trade .meta b { font-size: 16.5px; }
+.trade .meta p { color: var(--muted); font-size: 14.5px; line-height: 1.5; }
+.trade .meta .x { margin-top: 4px; font-size: 13.5px; font-weight: 700; color: var(--good); }
+.live-chip { display: inline-flex; align-items: center; gap: 8px; align-self: flex-start; font-size: 12px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--good); border: 1px solid rgba(95, 227, 166, .4); background: rgba(95, 227, 166, .08); border-radius: 999px; padding: 5px 12px; }
+
+/* ---------- about ---------- */
+.about { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); align-items: start; }
+@media (max-width: 899px) { .about { grid-template-columns: 1fr; } }
+.bio { display: grid; gap: 14px; }
+.bio p { font-size: clamp(16.5px, 1.6vw, 19px); color: var(--ink2); line-height: 1.65; }
+.bio p b { color: var(--ink); }
+.degree { display: flex; gap: 16px; align-items: center; padding: 20px; }
+.degree .cap { width: 52px; height: 52px; border-radius: 14px; background: var(--chip); color: var(--on-violet); display: grid; place-items: center; flex: none; }
+.degree .cap svg { width: 28px; height: 28px; fill: currentColor; }
+.degree b { display: block; color: var(--ink); font-size: 17px; }
+.degree span { color: var(--muted); font-size: 14.5px; }
+.tl-h { margin: clamp(32px, 4vw, 48px) 0 18px; font-size: 18px; font-weight: 700; }
+.timeline { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; position: relative; }
+.timeline::before { content: ''; position: absolute; left: 0; right: 0; top: 9px; height: 2px; background: linear-gradient(90deg, rgba(139, 108, 255, .15), #8b6cff 40%, #4f9dff); }
+.tl { position: relative; padding-top: 34px; min-width: 0; }
+.tl::before { content: ''; position: absolute; left: 0; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: #120e2a; border: 2px solid #8b6cff; }
+.tl.now::before { background: #4f9dff; border-color: #8fc3ff; box-shadow: 0 0 18px #4f9dff; }
+.tl b { display: block; font-size: 16.5px; margin-bottom: 4px; }
+.tl span { color: var(--muted); font-size: 14.5px; }
+@media (max-width: 760px) {
+  .timeline { grid-template-columns: 1fr; gap: 22px; }
+  .timeline::before { left: 7px; right: auto; top: 6px; bottom: 6px; width: 2px; height: auto; background: linear-gradient(180deg, rgba(139, 108, 255, .3), #8b6cff 40%, #4f9dff); }
+  .tl { padding: 0 0 0 34px; }
+  .tl::before { top: 3px; }
+}
+
+/* ---------- testimonials (hidden while empty) ---------- */
+.quotes { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
+.quote { padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; }
+.quote p { color: var(--ink2); font-size: 15.5px; }
+.quote span { color: var(--muted); font-size: 14px; font-weight: 600; }
+
+/* ---------- tools ---------- */
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+@media (max-width: 760px) { .tools { grid-template-columns: 1fr; } }
+.tool { padding: clamp(20px, 2.6vw, 30px); display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 10px 20px; text-decoration: none; color: inherit; transition: border-color .2s, transform .2s; }
+.tool:hover { border-color: var(--line2); transform: translateY(-2px); }
+.tool > div { display: flex; flex-direction: column; gap: 8px; }
+.tool h3 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.015em; }
+.tool p { color: var(--muted); font-size: 15px; }
+.tool .link { margin-top: 6px; color: var(--violet); }
+.tool .art { width: 92px; height: 92px; flex: none; }
+@media (max-width: 420px) { .tool .art { width: 64px; height: 64px; } }
+
+/* ---------- follow band + footer ---------- */
+.band { margin-top: clamp(80px, 10vw, 130px); position: relative; overflow: hidden; border-radius: 30px; padding: clamp(30px, 5vw, 64px); background: linear-gradient(120deg, rgba(139, 108, 255, .38), rgba(79, 157, 255, .16) 60%, rgba(10, 8, 24, .6)); border: 1px solid rgba(175, 150, 255, .5); display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; box-shadow: 0 40px 120px rgba(60, 40, 170, .3); }
+.band::before { content: ''; position: absolute; right: -120px; top: -160px; width: 460px; height: 460px; border-radius: 50%; background: radial-gradient(circle, rgba(143, 195, 255, .35), transparent 65%); pointer-events: none; }
+.band > div { position: relative; display: flex; flex-direction: column; gap: 8px; max-width: 640px; }
+.band b { font-size: clamp(28px, 3.8vw, 46px); font-weight: 800; letter-spacing: -0.03em; line-height: 1.08; background: linear-gradient(90deg, #fff, #dcd2ff); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.band > div > span { color: var(--ink2); font-size: clamp(16px, 1.6vw, 18px); }
+.btn.xbig { position: relative; background: #fff; color: #000; font-size: 17px; height: 58px; padding: 0 28px; box-shadow: 0 14px 40px rgba(0, 0, 0, .35); }
+.btn.xbig .xlogo { width: 18px; height: 18px; }
+footer { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; font-size: 13.5px; color: var(--muted); border-top: 1px solid rgba(165, 140, 255, .2); margin-top: 48px; padding: 22px 0 calc(28px + env(safe-area-inset-bottom, 0px)); }
+footer nav { display: flex; gap: 18px; flex-wrap: wrap; }
+footer a { color: var(--muted); text-decoration: none; font-weight: 600; }
+footer a:hover { color: var(--ink); }
+
+/* scroll reveal (class added by the script only) */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s ease, transform .7s ease; }
+.reveal.in { opacity: 1; transform: none; }
+@media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; transition: none; } :root { scroll-behavior: auto; } .track { scroll-behavior: auto; } }
+
+/* ---- readability: dark veil behind the content column (paths stay vivid on the sides), near-opaque boxes, bigger small text ---- */
+main.container { position: relative; }
+main.container::before { content: ''; position: absolute; top: 0; bottom: 0; left: 50%; width: min(100vw, calc(var(--maxw) + 200px)); transform: translateX(-50%); z-index: -1; pointer-events: none; background: rgba(5, 5, 11, .74);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 90px, #000 calc(100% - 90px), transparent 100%); mask-image: linear-gradient(90deg, transparent 0, #000 90px, #000 calc(100% - 90px), transparent 100%); }
+:root { --panel: rgba(17, 14, 32, .9); --panel2: rgba(28, 23, 52, .92); --muted: #e2ddf0; }
+.sub { font-size: 17px; color: #ece8f7; }
+.note { font-size: 15px; color: #e2ddf0; }
+.trade .meta p, .card p, .card li, .node p, .panel p { font-size: 15.5px; color: #ece8f7; }
+.wt p, .step p, .how span, .hiw span, .item, .stages span, .bignums > div > span, .stat > span, .proof .meta span, .cmp-row .s, .octfig > span:not(.tag) { font-size: 15.5px; color: #e2ddf0; }
+.strip > div > span, .pc-stats span, .pc-row span { font-size: 14.5px; color: #e2ddf0; }
 </style>
 </head>
 <body>
-<div class="wrap">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="x" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></symbol>
+  <symbol id="ar" viewBox="0 0 24 24"><path d="M3 12h16m-6-6 6 6-6 6" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ck" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="sh" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M5.6 5.6l12.8 12.8" stroke="currentColor" stroke-width="2"/></symbol>
+  <symbol id="db" viewBox="0 0 24 24"><path d="M4 19V9m6 10V5m6 14v-7m4 7H2" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></symbol>
+  <symbol id="logo" viewBox="0 0 64 64"><rect x="2" y="2" width="60" height="60" rx="14" fill="#0b0820" stroke="#a68cff" stroke-width="3"/><line x1="10" y1="16" x2="54" y2="16" stroke="#50a0ff" stroke-width="2.5" stroke-dasharray="4 4"/><line x1="10" y1="50" x2="54" y2="50" stroke="#ff7b98" stroke-width="2.5" stroke-dasharray="4 4"/><polyline points="10,36 17,30 23,38 30,27 37,31 44,21 50,17" fill="none" stroke="#5aaaff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+</svg>
+<canvas id="paths" aria-hidden="true"></canvas>
 
-  <header>
-    <div class="brand">
-      <span class="kicker">Sarkel · Prop Firm Math</span>
-      <span class="right"><button class="theme" id="theme" type="button">Light</button><a class="handle" href="https://x.com/Sarkel20" target="_blank" rel="noopener">@Sarkel20</a></span>
+<div class="topbar"><div class="container tb-in">
+  <a class="brand" href="#top"><svg><use href="#logo"/></svg><span>Payout Solver<span class="sub"> · by Sarkel</span></span></a>
+  <nav class="nav" id="nav" aria-label="Sections">
+    <a href="#lanes"><span data-l="en">Two lanes</span><span data-l="fr">Deux activités</span></a>
+    <a href="#payouts">Payouts</a>
+    <a href="#method"><span data-l="en">Method</span><span data-l="fr">Méthode</span></a>
+    <a href="#work">Coaching</a>
+    <a href="#trades">Trades</a>
+    <a href="#about"><span data-l="en">About</span><span data-l="fr">Parcours</span></a>
+    <a href="#tools"><span data-l="en">Tools</span><span data-l="fr">Outils</span></a>
+  </nav>
+  <button class="tb-btn icon" id="lang" type="button" aria-label="Language">FR</button>
+  <a class="tb-btn follow" href="https://x.com/Sarkel20" data-goatcounter-click="follow-topbar" target="_blank" rel="noopener"><svg class="xlogo"><use href="#x"/></svg><span class="ftxt"><span data-l="en">Follow</span><span data-l="fr">Suivre</span></span></a>
+  <a class="tb-btn cta" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-goatcounter-click="dm-topbar" target="_blank" rel="noopener"><span data-l="en">DM me</span><span data-l="fr">Écris-moi</span></a>
+  <div class="tb-menu">
+    <button class="tb-btn icon" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Sections"><span class="bars"><i></i><i></i><i></i></span></button>
+    <div class="tb-drop" id="menu">
+      <a href="#lanes"><span data-l="en">Two lanes</span><span data-l="fr">Deux activités</span> <small data-l="en">live vs props</small><small data-l="fr">live vs props</small></a>
+      <a href="#payouts">Payouts <small><span class="n-count">–</span> <span data-l="en">certificates</span><span data-l="fr">certificats</span></small></a>
+      <a href="#method"><span data-l="en">My method</span><span data-l="fr">Ma méthode</span></a>
+      <a href="#work"><span data-l="en">Work with me</span><span data-l="fr">Travailler avec moi</span> <small>1:1</small></a>
+      <a href="#trades">Trades <small data-l="en">charts</small><small data-l="fr">graphiques</small></a>
+      <a href="#about"><span data-l="en">About me</span><span data-l="fr">Qui suis-je</span></a>
+      <a href="#testimonials" class="testi-link" hidden><span data-l="en">Testimonials</span><span data-l="fr">Témoignages</span></a>
+      <a href="#tools"><span data-l="en">Free tools</span><span data-l="fr">Outils gratuits</span></a>
+      <a href="calculator/"><span data-l="en">Calculator</span><span data-l="fr">Calculateur</span> <small>↗</small></a>
     </div>
-    <h1>I do the math on prop firm rules.</h1>
-    <p class="lede">NQ futures trader, order flow and options. I trade funded accounts and model every rule that decides whether you get paid: drawdown floors, trailing, consistency, payout policies. Here is what I've been paid, the free tool I built, and how to talk to me.</p>
-    <nav class="nav"><a href="#payouts">Payouts</a><a href="#method">My method</a><a href="#about">About</a><a href="#trades">Trades</a><a href="#work">Work with me</a><a href="calculator/">Calculator</a></nav>
-    <div class="cta-row">
-      <a class="btn primary" href="calculator/">Check your eval odds</a>
-      <a class="btn ghost" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-dm target="_blank" rel="noopener">DM me on X</a>
+  </div>
+</div></div>
+
+<main class="container">
+
+  <!-- HERO -->
+  <header id="top" class="hero">
+    <div class="hero-main">
+      <span class="pill"><i></i>Payout Solver · by Sarkel · @Sarkel20</span>
+      <h1><span data-l="en">I do the math on prop firm rules.</span><span data-l="fr">Je modélise les prop firms avec des maths.</span></h1>
+      <p class="lede" data-l="en">NQ futures trader, on my own capital. Separately, since October, I've traded prop firms with Payout Solver, my model of every rule that decides whether you get paid: drawdown floors, trailing, consistency, payout policies.</p>
+      <p class="lede" data-l="fr">Trader NQ futures, sur mon propre capital. À côté, depuis octobre, je trade les prop firms avec Payout Solver, mon modèle de toutes les règles qui décident si tu es payé : plancher de drawdown, trailing, consistency, conditions de payout.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="calculator/"><span data-l="en">Check your eval odds</span><span data-l="fr">Calcule tes chances en éval</span><svg class="ar"><use href="#ar"/></svg></a>
+        <a class="btn x" href="https://x.com/Sarkel20" data-goatcounter-click="follow-hero" target="_blank" rel="noopener"><svg class="xlogo"><use href="#x"/></svg><span data-l="en">Follow @Sarkel20</span><span data-l="fr">Suivre @Sarkel20</span></a>
+        <a class="btn ghost" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-goatcounter-click="dm-hero" target="_blank" rel="noopener"><span data-l="en">DM me</span><span data-l="fr">M'écrire</span></a>
+      </div>
+      <div class="strip">
+        <div><b><span data-l="en">190B+</span><span data-l="fr">190 Md+</span></b><span data-l="en">simulated account paths</span><span data-l="fr">trajectoires simulées</span></div>
+        <div><b>28</b><span data-l="en">prop firms, rule by rule</span><span data-l="fr">prop firms, règle par règle</span></div>
+        <div><b>81</b><span data-l="en">account plans</span><span data-l="fr">plans de compte</span></div>
+      </div>
+    </div>
+
+    <div class="proofcard-wrap">
+      <div class="fan" id="fan" aria-hidden="true"></div>
+      <div class="proofcard">
+        <div class="pc-top">
+          <span class="pc-lab" data-l="en">Prop firm payouts</span><span class="pc-lab" data-l="fr">Payouts prop firms</span>
+          <span class="pc-live"><i></i><span data-l="en">Updated with every payout</span><span data-l="fr">Mis à jour à chaque payout</span></span>
+        </div>
+        <div class="pc-total"><b id="h-total">–</b><span data-l="en">in prop firm payouts, net of eval fees</span><span data-l="fr">de payouts prop firms, frais d'éval déduits</span></div>
+        <div class="spark" id="spark" aria-hidden="true"></div>
+        <div class="spark-l" id="spark-l"></div>
+        <div class="pc-stats">
+          <div><b id="h-count">–</b><span data-l="en">payout certificates, all on this page</span><span data-l="fr">certificats de payout, tous sur cette page</span></div>
+          <div><b id="h-mult">–</b><span data-l="en">net return on eval spend</span><span data-l="fr">rendement net sur les évals</span></div>
+        </div>
+        <div class="pc-list">
+          <h4 data-l="en">Latest payouts</h4><h4 data-l="fr">Derniers payouts</h4>
+          <div id="latest"></div>
+        </div>
+        <a class="pc-all" href="#payouts" id="pc-all">–</a>
+      </div>
     </div>
   </header>
 
-  <section id="payouts">
-    <h2>Payouts</h2>
-    <p class="sub">Payout certificates issued by the firms, largest first. Net of eval fees: I left out the payouts that only paid back my evals and activations, so the total is what I kept. My first name and the certificate IDs are masked, nothing else is edited.</p>
-    <div class="stats">
-      <div class="stat"><b>~$3,500</b><span>spent on evals</span></div>
-      <div class="stat"><b id="total">$0</b><span>paid out on top, net of eval fees</span></div>
-      <div class="stat"><b id="multiple">–</b><span>net return on what I spent on evals (<span id="mult">–</span>)</span></div>
-      <div class="stat"><b id="count">0</b><span>payouts since <span id="since">–</span></span></div>
+  <!-- TWO LANES -->
+  <section id="lanes" class="sec">
+    <div class="sh">
+      <h2><span data-l="en"><span class="k">Two lanes</span><span class="sep">·</span>Kept apart</span><span data-l="fr"><span class="k">Deux activités</span><span class="sep">·</span>Bien séparées</span></h2>
+      <p class="lead2"><span data-l="en">Live trader first. Then I turned prop firms into a math problem.</span><span data-l="fr">D'abord trader live. Ensuite, j'ai modélisé les prop firms.</span></p>
     </div>
-    <p class="note" id="netline"></p>
-    <p class="note" id="chartlabel">Last 3 months</p>
-    <div class="months" id="months"></div>
-    <p class="sub">I started trading the model in October. Before that, prop firms were a side thing next to my live account.</p>
-    <h3 class="h3">Certificates</h3>
+    <div class="lanes">
+      <div class="lane live glass">
+        <div class="lane-head">
+          <span class="lane-k" data-l="en">Live account</span><span class="lane-k" data-l="fr">Compte live</span>
+          <span class="tag live" data-l="en">Since 2025 · live account</span><span class="tag live" data-l="fr">Depuis 2025 · compte live</span>
+        </div>
+        <div class="big" data-l="en">Main income</div><div class="big" data-l="fr">Revenu principal</div>
+        <p data-l="en">I trade my own capital on a live account – it pays the bills and then some.</p>
+        <p data-l="fr">Je trade mon propre capital sur un compte live : il paie les factures, et bien plus.</p>
+        <div class="how-h" data-l="en">How I trade</div><div class="how-h" data-l="fr">Comment je trade</div>
+        <div class="how">
+          <div><em>1</em><b data-l="en">Options positioning</b><b data-l="fr">Positionnement options</b><span data-l="en">Where dealers are long or short gamma: where price is likely to stall or speed up.</span><span data-l="fr">Où les dealers sont long ou short gamma : là où le prix risque de caler ou d'accélérer.</span></div>
+          <div><em>2</em><b data-l="en">Profiles</b><b data-l="fr">Profils</b><span data-l="en">TPO and volume: value areas and levels for the day.</span><span data-l="fr">TPO et volume : zones de valeur et niveaux du jour.</span></div>
+          <div><em>3</em><b>Order flow</b><span data-l="en">Absorption and aggression on the tape decide the entry.</span><span data-l="fr">L'absorption et l'agressivité au tape décident l'entrée.</span></div>
+        </div>
+        <div class="callout"><svg><use href="#sh"/></svg><span data-l="en">Kept apart: no model here, and none of the numbers on this page.</span><span data-l="fr">À part : pas de modèle ici, et aucun des chiffres de cette page.</span></div>
+        <a class="link" href="#trades" style="color:var(--good)"><span data-l="en">See my live trades</span><span data-l="fr">Voir mes trades live</span> →</a>
+      </div>
+
+      <div class="divider" aria-hidden="true"><span data-l="en">Kept apart</span><span data-l="fr">Séparés</span></div>
+
+      <div class="lane prop glass">
+        <div class="lane-head">
+          <span class="lane-k">Prop firms</span>
+          <span class="tag" data-l="en">Oct 2026 · props + the model</span><span class="tag" data-l="fr">Oct. 2026 · props + le modèle</span>
+        </div>
+        <div class="big" data-l="en">The model</div><div class="big" data-l="fr">Le modèle</div>
+        <p data-l="en">Same trader, same strategy. What changed: risk sized to each account's state, every rule priced in.</p>
+        <p data-l="fr">Même trader, même stratégie. Ce qui a changé : un risque adapté à l'état de chaque compte, chaque règle prise en compte.</p>
+        <div class="cmp">
+          <div class="cmp-h" data-l="en">Prop payouts per month</div><div class="cmp-h" data-l="fr">Payouts prop par mois</div>
+          <div class="cmp-row">
+            <div class="cmp-top"><span class="t" data-l="en">Jan – Sep 2026 · props, no model</span><span class="t" data-l="fr">Janv. – sept. 2026 · props sans modèle</span><b id="s-pre-avg">–</b></div>
+            <div class="cmp-bar"><i id="bar-pre"></i></div>
+            <span class="s"><span id="s-pre">–</span> <span id="s-pre-m"></span>. <span data-l="en">Prop firms on the side, a trade here and there. A solid strategy, no plan for the rules.</span><span data-l="fr">Les prop firms à côté, un trade de temps en temps. Une stratégie solide, aucun plan pour les règles.</span></span>
+          </div>
+          <div class="cmp-row on">
+            <div class="cmp-top"><span class="t" data-l="en">Oct 2026 · props + the model</span><span class="t" data-l="fr">Oct. 2026 · props + le modèle</span><b id="s-oct">–</b></div>
+            <div class="cmp-bar"><i id="bar-oct"></i></div>
+            <span class="s" data-l="en">in prop payouts, in one month</span><span class="s" data-l="fr">de payouts prop, en un mois</span>
+          </div>
+        </div>
+        <div class="callout"><svg><use href="#db"/></svg><span data-l="en">Every number on this site comes from here.</span><span data-l="fr">Tous les chiffres de ce site viennent d'ici.</span></div>
+        <a class="link" href="#payouts"><span data-l="en">See the payouts</span><span data-l="fr">Voir les payouts</span> →</a>
+      </div>
+    </div>
+    <p class="story-foot" data-l="en"><b>Every dollar on this page is a prop firm payout, shown as a certificate, not a P&amp;L screenshot.</b> Early results, published as they come: every new payout gets added here.</p>
+    <p class="story-foot" data-l="fr"><b>Chaque dollar de cette page est un payout de prop firm, montré par un certificat, pas une capture de P&amp;L.</b> Premiers résultats, publiés au fil de l'eau : chaque nouveau payout est ajouté ici.</p>
+  </section>
+
+  <!-- PAYOUTS -->
+  <section id="payouts" class="sec">
+    <div class="sh">
+      <h2><span data-l="en"><span class="k">Proof</span><span class="sep">·</span>Prop firm payouts</span><span data-l="fr"><span class="k">Preuves</span><span class="sep">·</span>Payouts prop firms</span></h2>
+      <p class="sub" data-l="en">Prop firm payouts only: my live account isn't counted here. Certificates issued by the firms. My first name and the certificate IDs are masked, nothing else is edited.</p>
+      <p class="sub" data-l="fr">Uniquement des payouts de prop firms : mon compte live n'est pas compté ici. Certificats émis par les firmes. Mon prénom et les numéros de certificat sont masqués, rien d'autre n'est retouché.</p>
+    </div>
+    <div class="stats">
+      <div class="stat glass"><b id="spent">~$3,500</b><span data-l="en">spent on evals</span><span data-l="fr">dépensés en évals</span></div>
+      <div class="stat glass hl"><b id="total">–</b><span data-l="en">in prop firm payouts, net of eval fees</span><span data-l="fr">de payouts prop firms, frais d'éval déduits</span></div>
+      <div class="stat glass"><b id="multiple">–</b><span data-l="en">net return on eval spend</span><span data-l="fr">rendement net sur les évals</span></div>
+      <div class="stat glass"><b id="count">–</b><span data-l="en">payouts since</span><span data-l="fr">payouts depuis</span> <span id="since">–</span></div>
+    </div>
+    <div class="pay-grid">
+      <div class="panel glass">
+        <div class="ph">
+          <h3><span data-l="en">Payouts by month</span><span data-l="fr">Payouts par mois</span></h3>
+          <div class="legend"><span><i></i><span data-l="en">No model</span><span data-l="fr">Sans modèle</span></span><span><i class="on"></i><span data-l="en">With the model</span><span data-l="fr">Avec le modèle</span></span></div>
+        </div>
+        <div class="mchart" id="mchart"></div>
+      </div>
+      <div class="panel glass read">
+        <div class="octfig">
+          <span class="tag" data-l="en">Oct 2026 · props + the model</span><span class="tag" data-l="fr">Oct. 2026 · props + le modèle</span>
+          <b id="oct2">–</b>
+          <span data-l="en">in prop payouts, in one month</span><span data-l="fr">de payouts prop, en un mois</span>
+        </div>
+        <h3><span data-l="en">How to read it</span><span data-l="fr">Comment le lire</span></h3>
+        <p id="netline" class="big"></p>
+        
+        
+      </div>
+    </div>
+    <div class="certs-h">
+      <h3><span data-l="en">Certificates</span><span data-l="fr">Certificats</span></h3>
+      <span class="note" data-l="en">Largest first. Click to enlarge.</span><span class="note" data-l="fr">Les plus gros d'abord. Clique pour agrandir.</span>
+    </div>
     <div class="proofs" id="proofs"></div>
     <button class="more-btn" id="more" type="button"></button>
   </section>
 
-  <section id="method">
-    <h2>My method</h2>
-    <p class="sub">On a broker account you optimize your equity curve. At a prop firm the rules decide who gets paid, so I optimize something else: the odds and the speed of getting paid, in net dollars per trading day.</p>
-    <div class="stats">
-      <div class="stat"><b>190 billion+</b><span>simulated account paths, counted (a floor)</span></div>
-      <div class="stat"><b>28</b><span>futures prop firms modeled, rule by rule</span></div>
-      <div class="stat"><b>81</b><span>account plans, plus payout variants</span></div>
-      <div class="stat"><b>1,140</b><span>automated tests on the model</span></div>
+  <!-- METHOD -->
+  <section id="method" class="sec">
+    <div class="sh">
+      <h2><span data-l="en"><span class="k">The model</span><span class="sep">·</span>My method</span><span data-l="fr"><span class="k">Le modèle</span><span class="sep">·</span>Ma méthode</span></h2>
     </div>
-    <details class="explain" open>
-      <summary>Where the 190 billion comes from</summary>
-      <p>For every setup the model optimizes (an account plan, an edge level, a reward-to-risk, a pass rate, a payout policy), it searches the best risk for each zone of account state: 13 zones, or 26 when the policy changes after the first payout. Every candidate size is tested on 20,000 simulated paths, zone by zone, for one to three full passes. The winner is then re-measured on 60,000 fresh paths.</p>
-      <p>I only counted the result files whose code I've checked: 103,669 optimized policies. With a single pass everywhere, that's 190 billion+ paths. With three passes everywhere, about 700 billion. The exact dynamic-programming computations aren't simulations, so they're not in the count.</p>
-    </details>
-    <div class="cards">
-      <div class="card"><h3>An account is an option</h3><p>You pay a small fee for the right to lose the firm's money and keep a share of what's above a threshold. That contract has a value of its own, before any skill. I price it: trailing floors and their lock, consistency caps, daily limits, minimum days, payout buffers and caps, splits, eval prices, resets, activation fees.</p></div>
-      <div class="card"><h3>Every state has a value</h3><p>An account isn't just its balance. Distance to the floor, where the trailing stops, days traded, payouts already taken: together they're the state. For each state the model computes what the account is still worth in expected dollars: its residual value. That's what tells you when to push, when to protect, when to let it go.</p></div>
-      <div class="card"><h3>Risk depends on the state</h3><p>The right risk per trade and reward-to-risk aren't fixed. Close to the floor, far from it, just before a payout, just after one: each calls for a different size. Exact dynamic programming (backward induction over the account's states) finds that policy, Monte Carlo checks it.</p></div>
-      <div class="card"><h3>Eval and funded are two different games</h3><p>In an eval you're buying a pass: hit the target before the floor, at the lowest cost per pass. Funded, you're extracting cash before the floor catches you, under payout and consistency rules. Same trader, different objective, different optimal risk.</p></div>
-      <div class="card"><h3>Costs and chaining included</h3><p>A blown eval gets re-bought, a funded account lost before its first payout sends you back to an eval. The model runs the whole chain with every fee in it and ranks plans by expected net dollars per trading day, computed as total over total, not an average of ratios.</p></div>
-      <div class="card"><h3>Zero edge first</h3><p>Everything starts from a coin-flip trader: what do the rules alone give you? Edge is added on top, never assumed. If a plan only works with a big edge, it doesn't work.</p></div>
-      <div class="card"><h3>Checked, not fitted</h3><p>Every optimum is re-measured on fresh paths. An independent simulator (a million paths per case) and a second exact solver cross-check the model. A hard invariant: at zero edge, it can't create money from nothing. Rules are read from each firm's site by two independent passes; when a rule is ambiguous, the model takes the most pessimistic reading.</p></div>
-      <div class="card"><h3>What it doesn't model</h3><p>A firm refusing to pay, a firm going under, taxes. Those are judgment calls, and I make them separately.</p></div>
-    </div>
-  </section>
-
-  <section id="about">
-    <h2>About me</h2>
-    <div class="offer">
-      <p>I'm Sarkel. Background in finance and mathematics, full-time NQ futures trader since 2025, right after my studies. I read order flow and options positioning (where dealers are long or short gamma).</p>
-      <p>Besides the funded accounts, I trade a personal live account with my own capital: options positioning tells me where price is likely to stall or speed up, order flow decides the entry. I don't post its balance.</p>
-      <p>Until September, prop firms were a side thing. I traded them now and then, without a model, and my strategy got me a few payouts, but most of my money came from my live account, by far. Then I built a quantitative model of prop firm rules and started trading it in October. That's when the payouts took off: $6,657 from January to September, $6,161 in October alone.</p>
-      <p>I post the math on X: odds of passing, why trailing floors cost you, why your 2nd payout is easier than your 1st.</p>
-    </div>
-  </section>
-
-  <section id="trades">
-    <h2>Trades</h2>
-    <p class="sub">A few NQ trades I posted on X as they happened, mistakes included. Points only: no balances, no sizes.</p>
-    <div class="trades">
-      <a class="trade" href="https://x.com/Sarkel20/status/2106088958622835104" target="_blank" rel="noopener"><img src="trades/2026-10-02.jpg" width="1400" height="927" loading="lazy" alt="NQ short, Oct 2, 2026"><div class="meta"><b>Oct 2 · short, +53.75 pts</b><p>Downtrend into VWAP and the previous week's high, absorption on the retest. Exited at the low-volume shelf, too early: trailing is still my weak spot.</p></div></a>
-      <a class="trade" href="https://x.com/Sarkel20/status/2105604567022915858" target="_blank" rel="noopener"><img src="trades/2026-10-01.jpg" width="1400" height="673" loading="lazy" alt="NQ short, Oct 1, 2026"><div class="meta"><b>Oct 1 · short, zone to zone</b><p>Simple zone to zone with order flow on top. Exited too early on the dump; my entry is the thing I'm working on.</p></div></a>
-      <a class="trade" href="https://x.com/Sarkel20/status/2082128240571994373" target="_blank" rel="noopener"><img src="trades/2026-07-28.jpg" width="960" height="990" loading="lazy" alt="NQ long, Jul 28, 2026"><div class="meta"><b>Jul 28 · +95 pts on my live account</b><p>Shorted the open on seller aggression on the tape, waited, price stalled and couldn't drop: long into new highs. Hesitated on a big absorption at the lows, logged as an execution error.</p></div></a>
-      <div class="trade"><img src="trades/2026-10-30.jpg" width="1400" height="711" loading="lazy" alt="NQ 1-minute chart with large orders, Oct 30, 2026"><div class="meta"><b>Oct 30 · what I look at</b><p>1-minute NQ with the large orders printed on the tape. Options positioning gives me the levels, this decides the entry.</p></div></div>
-    </div>
-  </section>
-
-  <section id="tools">
-    <h2>Free tools</h2>
-    <div class="cards">
-      <div class="card">
-        <h3>Eval Pass Odds</h3>
-        <p>Type your eval rules. Get your odds of hitting the target before the floor, at zero edge and at your own win rate, fixed or trailing drawdown.</p>
-        <a class="more" href="calculator/">Open the calculator →</a>
-      </div>
-      <div class="card">
-        <h3>Why your 2nd payout is easier</h3>
-        <p>Your 2nd prop firm payout is almost twice as likely as your 1st. Not psychology, just gambler's ruin. A short thread with the numbers.</p>
-        <a class="more" href="https://x.com/Sarkel20/status/2110373509059031059" target="_blank" rel="noopener">Read the thread →</a>
+    <div class="thesis glass">
+      <div class="big" data-l="en">At a prop firm, <em>the rules decide who gets paid.</em></div>
+      <div class="big" data-l="fr">En prop firm, <em>ce sont les règles qui décident qui est payé.</em></div>
+      <div class="vs">
+        <div class="box no"><span class="mk">✗</span><div><b data-l="en">Not an equity curve</b><b data-l="fr">Pas la plus belle courbe de P&amp;L</b><span data-l="en">A nice curve can still hit the floor before payday.</span><span data-l="fr">Une jolie courbe peut quand même toucher le plancher avant le payout.</span></div></div>
+        <div class="arrow"><svg><use href="#ar"/></svg></div>
+        <div class="box yes"><span class="mk">✓</span><div><b data-l="en">The odds and the speed of getting paid</b><b data-l="fr">Être payé, le plus souvent et le plus vite possible</b><span data-l="en">Pass, survive, withdraw, repeat.</span><span data-l="fr">Passer, survivre, retirer, recommencer.</span></div></div>
+        <div class="arrow"><svg><use href="#ar"/></svg></div>
+        <div class="box eq"><div><b data-l="en">ROI + EV per day</b><b data-l="fr">ROI + EV par jour</b><span data-l="en">return on fees, expected $ per trading day, net</span><span data-l="fr">retour sur les frais, gain espéré par jour de trading, net</span></div></div>
       </div>
     </div>
+
+    <div class="bento">
+      <div class="tile glass s12">
+        <p class="intro" data-l="en">I coded the rules of <b>28 firms and 81 plans</b>, then simulated <b>more than 190 billion account paths</b> to find the right risk in every situation. Four steps:</p>
+        <p class="intro" data-l="fr">J'ai codé les règles de <b>28 firmes et 81 plans</b>, puis simulé <b>plus de 190 milliards de trajectoires de compte</b> pour trouver le bon risque dans chaque situation. En quatre étapes :</p>
+        <div class="pipe">
+          <div class="step"><span class="n">1</span><span class="lab" data-l="en">Rules</span><span class="lab" data-l="fr">Règles</span><h4 data-l="en">Every rule, coded</h4><h4 data-l="fr">Chaque règle, codée</h4><p data-l="en">Floors, trailing, locks, consistency, payout rules.</p><p data-l="fr">Plancher, trailing, verrou, consistency, règles de payout.</p></div>
+          <div class="step"><span class="n">2</span><span class="lab" data-l="en">State</span><span class="lab" data-l="fr">État</span><h4 data-l="en">Where the account stands</h4><h4 data-l="fr">Où en est le compte</h4><p data-l="en">Every account has a state. The risk follows it.</p><p data-l="fr">Chaque compte a un état. Le risque le suit.</p></div>
+          <div class="step"><span class="n">3</span><span class="lab" data-l="en">Risk</span><span class="lab" data-l="fr">Risque</span><h4 data-l="en">The right size, per state</h4><h4 data-l="fr">La bonne taille, selon l'état</h4><p data-l="en">Computed, then stress-tested.</p><p data-l="fr">Calculée, puis mise à l'épreuve.</p></div>
+          <div class="step hot"><span class="n">4</span><span class="lab">ROI · EV</span><h4 data-l="en">The whole chain</h4><h4 data-l="fr">Toute la chaîne</h4><p data-l="en">Every fee counted. Plans ranked by ROI and expected $ per day.</p><p data-l="fr">Tous les frais comptés. Plans classés par ROI et gain espéré par jour.</p></div>
+        </div>
+      </div>
+
+      <div class="tile glass chart s7">
+        <h3><span data-l="en">An account is an option</span><span data-l="fr">Un compte est une option</span></h3>
+        <svg viewBox="0 0 560 250" role="img" aria-label="Expected value of a prop account, rising from zero at the floor to its highest at the target">
+          <defs>
+            <linearGradient id="cg" x1="0" x2="1"><stop offset="0" stop-color="#8b6cff"/><stop offset="1" stop-color="#4f9dff"/></linearGradient>
+            <linearGradient id="ag" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#8b6cff" stop-opacity=".35"/><stop offset="1" stop-color="#8b6cff" stop-opacity="0"/></linearGradient>
+          </defs>
+          <path class="area" d="M50 200 C 210 192, 360 140, 520 50 L520 200 Z"/>
+          <line class="ax" x1="50" y1="200" x2="520" y2="200"/>
+          <path class="curve" d="M50 200 C 210 192, 360 140, 520 50"/>
+          <rect class="floor" x="44" y="190" width="12" height="20" rx="3"/>
+          <rect class="target" x="514" y="190" width="12" height="20" rx="3"/>
+          <line class="dash" x1="330" y1="200" x2="330" y2="152"/>
+          <circle class="dot" cx="330" cy="152" r="8"/>
+          <text class="lb r" x="50" y="232" text-anchor="start" data-l="en">Floor</text><text class="lb r" x="50" y="232" text-anchor="start" data-l="fr">Plancher</text>
+          <text class="lb g" x="526" y="232" text-anchor="end" data-l="en">Target / payout</text><text class="lb g" x="526" y="232" text-anchor="end" data-l="fr">Objectif / payout</text>
+          <text class="v lb" x="318" y="130" text-anchor="end" data-l="en">your account today</text><text class="v lb" x="318" y="130" text-anchor="end" data-l="fr">ton compte aujourd'hui</text>
+          <text x="60" y="40" data-l="en">Expected value (EV)</text><text x="60" y="40" data-l="fr">Espérance de gain (EV)</text>
+          <text class="small" x="60" y="62" data-l="en">what the account is worth right now, in $</text><text class="small" x="60" y="62" data-l="fr">ce que vaut le compte maintenant, en $</text>
+        </svg>
+        <p class="note" data-l="en">A small fee buys the right to trade the firm's money. That right has a value, even at zero skill and even after a payout.</p>
+        <p class="note" data-l="fr">Un petit ticket achète le droit de trader l'argent de la firme. Ce droit a une valeur, même sans talent et même après un payout.</p>
+      </div>
+
+      <div class="tile glass s5">
+        <h3><span data-l="en">Eval and funded are two different games</span><span data-l="fr">Éval et financé : deux jeux différents</span></h3>
+        <div class="stages">
+          <div><b data-l="en">Eval</b><b data-l="fr">Éval</b><span data-l="en">Pass the eval at the lowest cost per pass.</span><span data-l="fr">Passer l'éval au plus bas coût par passage.</span></div>
+          <div><b data-l="en">Funded</b><b data-l="fr">Financé</b><span data-l="en">Take cash out before the floor catches you.</span><span data-l="fr">Sortir du cash avant que le plancher te rattrape.</span></div>
+          <div><b data-l="en">After each payout</b><b data-l="fr">Après chaque payout</b><span data-l="en">The account changes, so the right risk changes too.</span><span data-l="fr">Le compte change, donc le bon risque change aussi.</span></div>
+        </div>
+        <p class="note" style="margin-top:auto" data-l="en">Different objective at each stage, different optimal risk.</p>
+        <p class="note" style="margin-top:auto" data-l="fr">Un objectif différent à chaque étape, un risque optimal différent.</p>
+      </div>
+
+      <div class="tile glass s4 bignums">
+        <div><b>28</b><span data-l="en">futures prop firms, rule by rule</span><span data-l="fr">prop firms futures, règle par règle</span></div>
+        <div><b>81</b><span data-l="en">account plans + payout variants</span><span data-l="fr">plans de compte + variantes de payout</span></div>
+        <div><b><span data-l="en">1,140</span><span data-l="fr">1 140</span></b><span data-l="en">automated tests on the model</span><span data-l="fr">tests automatiques du modèle</span></div>
+      </div>
+
+      <div class="cards s8">
+        <div class="card glass"><span class="tag">EDGE = 0</span><h4 data-l="en">Zero edge first</h4><h4 data-l="fr">Edge nul d'abord</h4><p data-l="en">Start from a coin-flip trader. Edge goes on top, never assumed.</p><p data-l="fr">On part d'un trader pile ou face. L'edge s'ajoute ensuite, jamais supposé.</p></div>
+        <div class="card glass"><span class="tag" data-l="en">CHECKS</span><span class="tag" data-l="fr">CONTRÔLES</span><h4 data-l="en">Checked, not fitted</h4><h4 data-l="fr">Vérifié, pas ajusté</h4><p data-l="en">Two independent methods that have to agree.</p><p data-l="fr">Deux méthodes indépendantes qui doivent concorder.</p></div>
+        <div class="card glass"><span class="tag" data-l="en">RULES</span><span class="tag" data-l="fr">RÈGLES</span><h4 data-l="en">Pessimistic by default</h4><h4 data-l="fr">Pessimiste par défaut</h4><p data-l="en">Every rule read twice. When it's unclear, the harshest reading.</p><p data-l="fr">Chaque règle relevée deux fois. Si elle est floue, la lecture la plus dure.</p></div>
+        <div class="card glass"><span class="tag dim" data-l="en">LIMITS</span><span class="tag dim" data-l="fr">LIMITES</span><h4 data-l="en">Not in the model</h4><h4 data-l="fr">Hors du modèle</h4><p data-l="en">A firm refusing to pay or going under. Taxes.</p><p data-l="fr">Une firme qui refuse de payer ou qui ferme. Les impôts.</p></div>
+      </div>
+    </div>
   </section>
 
-  <section id="work">
-    <h2>Work with me</h2>
-    <div class="offer">
-      <p>I take a few traders one-on-one. You get the same model I trade, applied to your trading, with the numbers behind every recommendation.</p>
-      <ul>
-        <li><b>Which firm, which account.</b> Out of 81 plans at 28 firms, the ones that fit how you trade, ranked by dollars per day, not by marketing.</li>
-        <li><b>Your risk, by state.</b> Risk per trade and reward-to-risk for each stage of your account: evaluation, funded before the 1st payout, after it.</li>
-        <li><b>Payouts.</b> When to withdraw, how much, and when to stop pushing an account.</li>
-        <li><b>Several accounts at once.</b> How many evals and funded accounts to run in parallel, the bankroll it takes, and your real odds of going broke.</li>
-        <li><b>From CFDs or a sim to futures prop firms.</b> What changes, what it costs, where people lose their first evals.</li>
-      </ul>
-      <p>One-on-one over a few weeks: a written plan built on your numbers, and calls to go through it.</p>
-      <p><b>Limited spots.</b> Send me a DM on X and tell me where you are. We'll see if it makes sense, privately.</p>
-      <div class="cta-row"><a class="btn primary" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-dm target="_blank" rel="noopener">DM me on X</a></div>
+  <!-- WHY ME -->
+  <section id="why" class="sec">
+    <div class="sh">
+      <h2><span data-l="en"><span class="k">Why me</span><span class="sep">·</span>What sets this apart</span><span data-l="fr"><span class="k">Pourquoi moi</span><span class="sep">·</span>Ce qui me distingue</span></h2>
     </div>
-    <p class="note">Education on prop firm rules and risk math. Not financial advice, no signals, no trade copying.</p>
+    <div class="why">
+      <div class="wt glass"><span class="i">01</span><h4 data-l="en">Others teach you to trade. I make the rules work for you.</h4><h4 data-l="fr">Le trading, d'autres te l'apprennent. Moi, je fais en sorte que les règles jouent pour toi.</h4><p data-l="en">No setups for sale: I compute the risk that fits the way you already trade.</p><p data-l="fr">Je ne vends pas de setup : je calcule le risque qui colle à ta façon de trader.</p></div>
+      <div class="wt glass"><span class="i">02</span><h4 data-l="en">Proof, not promises</h4><h4 data-l="fr">Des preuves, pas des promesses</h4><p data-l="en"><span class="n-count">–</span> payout certificates, all on this page, and a model you can test for free.</p><p data-l="fr"><span class="n-count">–</span> certificats de payout, tous sur cette page, et un modèle que tu peux tester gratuitement.</p></div>
+      <div class="wt glass"><span class="i">03</span><h4 data-l="en">The background for it</h4><h4 data-l="fr">La formation qui va avec</h4><p data-l="en">Master's in finance and maths, banking experience, 6+ years of trading.</p><p data-l="fr">Master en finance et maths, expérience en banque, plus de 6 ans de trading.</p></div>
+      <div class="wt glass no"><span class="i">04</span><h4 data-l="en">What I don't do</h4><h4 data-l="fr">Ce que je ne fais pas</h4><p data-l="en">No signals, no trade copying, no promised gains.</p><p data-l="fr">Pas de signaux, pas de copie de trades, pas de gains promis.</p></div>
+    </div>
   </section>
+
+  <!-- COACHING -->
+  <section id="work" class="sec">
+    <div class="sh">
+      <h2><span data-l="en"><span class="k">Coaching</span><span class="sep">·</span>Work with me 1:1</span><span data-l="fr"><span class="k">Coaching</span><span class="sep">·</span>Travailler avec moi en 1:1</span></h2>
+    </div>
+    <div class="offer">
+      <div class="offer-l">
+        <p class="lead" data-l="en">I take a few traders. You get the model I trade, applied to your trading, with the numbers behind every recommendation.</p>
+        <p class="lead" data-l="fr">J'accompagne quelques traders. Tu as le modèle que je trade, appliqué à ton trading, avec les chiffres derrière chaque recommandation.</p>
+        <p class="who" data-l="en">For traders who pass evals but lose funded accounts before getting paid, or who want to run several accounts.</p>
+        <p class="who" data-l="fr">Pour les traders qui passent des évals mais perdent leurs comptes financés avant d'être payés, ou qui veulent mener plusieurs comptes.</p>
+        <div class="ol-h" data-l="en">What we work on</div><div class="ol-h" data-l="fr">Ce qu'on travaille</div>
+        <div class="items">
+          <div class="item"><svg><use href="#ck"/></svg><b data-l="en">Which firm, which account</b><b data-l="fr">Quelle firme, quel compte</b><span data-l="en">The plans that fit how you trade, ranked by ROI and expected $ per day.</span><span data-l="fr">Les plans qui collent à ta façon de trader, classés par ROI et gain espéré par jour.</span></div>
+          <div class="item"><svg><use href="#ck"/></svg><b data-l="en">Your risk, by state</b><b data-l="fr">Ton risque, par état</b><span data-l="en">Risk and reward-to-risk at each stage: eval, funded, after payouts.</span><span data-l="fr">Risque et ratio gain/risque à chaque étape : éval, financé, après les payouts.</span></div>
+          <div class="item"><svg><use href="#ck"/></svg><b>Payouts</b><span data-l="en">When to withdraw, how much, when to stop pushing.</span><span data-l="fr">Quand retirer, combien, quand arrêter de pousser.</span></div>
+          <div class="item"><svg><use href="#ck"/></svg><b data-l="en">Several accounts at once</b><b data-l="fr">Plusieurs comptes en parallèle</b><span data-l="en">How many at once, the bankroll it takes, your real risk of ruin.</span><span data-l="fr">Combien en parallèle, la bankroll nécessaire, ton vrai risque de ruine.</span></div>
+          <div class="item wide"><svg><use href="#ck"/></svg><b data-l="en">CFDs or sim → futures props</b><b data-l="fr">CFD ou simu → props futures</b><span data-l="en">What changes, and where people lose their first evals.</span><span data-l="fr">Ce qui change, et là où on perd ses premières évals.</span></div>
+        </div>
+      </div>
+      <div class="offer-r">
+        <h3><span data-l="en">How it works</span><span data-l="fr">Comment ça se passe</span></h3>
+        <div class="hiw">
+          <div><em>1</em><b data-l="en">DM</b><b data-l="fr">Message</b><span data-l="en">Tell me on X where you're at: firms, accounts, results so far.</span><span data-l="fr">Dis-moi sur X où tu en es : firmes, comptes, résultats jusqu'ici.</span></div>
+          <div><em>2</em><b data-l="en">Short call</b><b data-l="fr">Court appel</b><span data-l="en">We see whether it's a fit. No commitment.</span><span data-l="fr">On voit si ça colle. Sans engagement.</span></div>
+          <div><em>3</em><b data-l="en">Your plan</b><b data-l="fr">Ton plan</b><span data-l="en">A written plan built on your numbers, then calls over a few weeks to put it in place.</span><span data-l="fr">Un plan écrit sur tes chiffres, puis des appels sur quelques semaines pour le mettre en place.</span></div>
+        </div>
+        <a class="btn primary big" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-goatcounter-click="dm-offer" target="_blank" rel="noopener"><span data-l="en">DM me on X →</span><span data-l="fr">M'écrire sur X →</span></a>
+        <p class="spots" data-l="en"><b>Limited spots.</b> DM me on X and tell me where you're at.</p>
+        <p class="spots" data-l="fr"><b>Places limitées.</b> Écris-moi sur X et dis-moi où tu en es.</p>
+      </div>
+    </div>
+    <p class="note" style="margin-top:14px" data-l="en">Education on prop firm rules and risk math. Not financial advice, no signals, no trade copying.</p>
+    <p class="note" style="margin-top:14px" data-l="fr">De la formation sur les règles des prop firms et les maths du risque. Pas de conseil financier, pas de signaux, pas de copie de trades.</p>
+  </section>
+
+  <!-- TRADES -->
+  <section id="trades" class="sec">
+    <div class="trades-h">
+      <div class="sh">
+        <h2><span data-l="en"><span class="k">Live account</span><span class="sep">·</span>My trades</span><span data-l="fr"><span class="k">Compte live</span><span class="sep">·</span>Mes trades</span></h2>
+        <p class="lead2"><span data-l="en">How I read NQ on my live account, a different game than prop firms.</span><span data-l="fr">Comment je lis le NQ sur mon compte live, un autre jeu que les prop firms.</span></p>
+        <p class="sub" data-l="en">Posted on X as they happened, mistakes included.</p>
+        <p class="sub" data-l="fr">Postés sur X en direct, erreurs comprises.</p>
+      </div>
+      <div class="car-nav">
+        <button class="prev" id="car-prev" type="button" aria-label="Previous"><svg><use href="#ar"/></svg></button>
+        <button class="next" id="car-next" type="button" aria-label="Next"><svg><use href="#ar"/></svg></button>
+      </div>
+    </div>
+    <div class="track" id="track">
+      <div class="trade"><img src="trades/2026-11-02.jpg" width="1400" height="790" loading="lazy" alt="NQ TPO profiles by session with the composite profile, Nov 2, 2026"><div class="meta"><b data-l="en">Nov 2 · TPO profiles</b><b data-l="fr">2 nov. · profils TPO</b><p data-l="en">One profile per session and the multi-day composite on the right. Value areas and POCs give me the map before the open.</p><p data-l="fr">Un profil par séance et le composite multi-jours à droite. Zones de valeur et POC me donnent la carte avant l'ouverture.</p></div></div>
+      <div class="trade"><img src="trades/2026-10-30.jpg" width="1400" height="711" loading="lazy" alt="NQ 1-minute chart with large orders, Oct 30, 2026"><div class="meta"><b data-l="en">Oct 30 · what I look at</b><b data-l="fr">30 oct. · ce que je regarde</b><p data-l="en">1-minute NQ with the large orders printed on the tape. Options positioning gives me the levels, this decides the entry.</p><p data-l="fr">NQ en 1 minute avec les gros ordres imprimés au tape. Le positionnement options donne les niveaux, ceci décide l'entrée.</p></div></div>
+      <a class="trade" href="https://x.com/Sarkel20/status/2106088958622835104" target="_blank" rel="noopener"><img src="trades/2026-10-02.jpg" width="1400" height="927" loading="lazy" alt="NQ short, Oct 2, 2026"><div class="meta"><b data-l="en">Oct 2 · short, +53.75 pts</b><b data-l="fr">2 oct. · short, +53,75 pts</b><p data-l="en">Downtrend into VWAP and the previous week's high, absorption on the retest. Exited at the low-volume shelf, too early: trailing is still my weak spot.</p><p data-l="fr">Tendance baissière dans le VWAP et le plus haut de la semaine précédente, absorption sur le retest. Sortie sur le palier de faible volume, trop tôt : le trailing reste mon point faible.</p><span class="x" data-l="en">View the post on X ↗</span><span class="x" data-l="fr">Voir le post sur X ↗</span></div></a>
+      <a class="trade" href="https://x.com/Sarkel20/status/2105604567022915858" target="_blank" rel="noopener"><img src="trades/2026-10-01.jpg" width="1400" height="673" loading="lazy" alt="NQ short, Oct 1, 2026"><div class="meta"><b data-l="en">Oct 1 · short, zone to zone</b><b data-l="fr">1er oct. · short, de zone à zone</b><p data-l="en">Simple zone to zone with order flow on top. Exited too early on the dump: holding winners is what I'm working on.</p><p data-l="fr">Un simple zone à zone, avec l'order flow en confirmation. Sorti trop tôt sur la chute : laisser courir les gains, c'est ce que je travaille.</p><span class="x" data-l="en">View the post on X ↗</span><span class="x" data-l="fr">Voir le post sur X ↗</span></div></a>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about" class="sec">
+    <div class="sh">
+      <h2><span data-l="en"><span class="k">Background</span><span class="sep">·</span>About me</span><span data-l="fr"><span class="k">Parcours</span><span class="sep">·</span>Qui suis-je</span></h2>
+    </div>
+    <div class="about">
+      <div class="bio">
+        <p data-l="en"><b>I'm Sarkel. I trade NQ futures for a living, on my own capital.</b> Prop firms were a side income, until I noticed that a lot of traders don't fail them for lack of a strategy: the rules beat them first. So I put the rules into a model, and I now trade my prop accounts with it.</p>
+        <p data-l="fr"><b>Moi, c'est Sarkel. Je vis du trading du NQ futures, sur mon propre capital.</b> Les prop firms étaient un revenu d'appoint, jusqu'à ce que je remarque qu'un tas de traders ne les ratent pas par manque de stratégie : ce sont les règles qui les battent d'abord. Alors j'ai mis les règles dans un modèle, et je trade désormais mes comptes prop avec.</p>
+        <p data-l="en">I started this site to show the results in public, one payout at a time, and to help a few traders get paid more often, with numbers instead of guesswork.</p>
+        <p data-l="fr">J'ai lancé ce site pour montrer les résultats en public, payout après payout, et pour aider quelques traders à être payés plus souvent, avec des chiffres plutôt qu'au feeling.</p>
+      </div>
+      <div class="degree glass"><span class="cap"><svg viewBox="0 0 24 24"><path d="M12 3 1 9l11 6 9-4.9V17h2V9L12 3zm-6.8 9.2V16c0 1.7 3 3.5 6.8 3.5s6.8-1.8 6.8-3.5v-3.8L12 16l-6.8-3.8z"/></svg></span><div><b data-l="en">Master's degree in finance and maths</b><b data-l="fr">Master en finance et maths</b><span data-l="en">Banking experience · 6+ years of trading</span><span data-l="fr">Expérience en banque · plus de 6 ans de trading</span></div></div>
+    </div>
+    <h3 class="tl-h"><span data-l="en">My path</span><span data-l="fr">Mon parcours</span></h3>
+    <div class="timeline">
+      <div class="tl"><b data-l="en">During my studies</b><b data-l="fr">Pendant mes études</b><span data-l="en">6 years of trading on the side, while studying finance and maths.</span><span data-l="fr">6 ans de trading à côté, en étudiant la finance et les maths.</span></div>
+      <div class="tl"><b data-l="en">2025 · Full-time</b><b data-l="fr">2025 · Plein temps</b><span data-l="en">Right out of school, full-time on NQ futures, made possible by 6+ years of trading and growing my live account.</span><span data-l="fr">Dès la fin de mes études, à plein temps sur le NQ futures, rendu possible par plus de 6 ans à trader et faire grandir mon compte live.</span></div>
+      <div class="tl now"><b data-l="en">Oct 2026 · The model</b><b data-l="fr">Oct. 2026 · Le modèle</b><span data-l="en">Before: prop firms as a side income. Now: traded optimally with the model.</span><span data-l="fr">Avant : les prop firms en revenu d'appoint. Désormais : tradées de façon optimale avec le modèle.</span></div>
+    </div>
+  </section>
+
+  <section id="testimonials" class="sec" hidden>
+    <div class="sh"><h2><span data-l="en">Testimonials</span><span data-l="fr">Témoignages</span></h2></div>
+    <div class="quotes" id="quotes"></div>
+  </section>
+
+  <!-- TOOLS -->
+  <section id="tools" class="sec">
+    <div class="sh">
+      <h2><span data-l="en"><span class="k">Free</span> tools</span><span data-l="fr">Outils <span class="k">gratuits</span></span></h2>
+      <p class="lead2"><span data-l="en">Run the numbers yourself.</span><span data-l="fr">Fais le calcul toi-même.</span></p>
+    </div>
+    <div class="tools">
+      <a class="tool glass" href="calculator/">
+        <div>
+          <span class="tag" data-l="en">CALCULATOR</span><span class="tag" data-l="fr">CALCULATEUR</span>
+          <h3>Eval Pass Odds</h3>
+          <p data-l="en">Your eval rules in, your odds of hitting the target before the floor out. At zero edge or at your own win rate.</p>
+          <p data-l="fr">Les règles de ton éval en entrée, tes chances d'atteindre l'objectif avant le plancher en sortie. À edge nul ou à ton propre win rate.</p>
+          <span class="link"><span data-l="en">Open the calculator →</span><span data-l="fr">Ouvrir le calculateur →</span></span>
+        </div>
+        <svg class="art" aria-hidden="true"><use href="#logo"/></svg>
+      </a>
+      <a class="tool glass" href="https://x.com/Sarkel20/status/2110373509059031059" target="_blank" rel="noopener">
+        <div>
+          <span class="tag">THREAD</span>
+          <h3 data-l="en">Why your 2nd payout is easier</h3><h3 data-l="fr">Pourquoi ton 2e payout est plus facile</h3>
+          <p data-l="en">Your 2nd payout is almost twice as likely as your 1st. Not psychology: gambler's ruin.</p>
+          <p data-l="fr">Ton 2e payout est presque deux fois plus probable que le 1er. Pas de la psychologie : la ruine du joueur (thread en anglais).</p>
+          <span class="link"><span data-l="en">Read the thread →</span><span data-l="fr">Lire le thread →</span></span>
+        </div>
+        <svg class="art" viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="14" fill="#0b0820" stroke="#a68cff" stroke-width="3"/><use href="#x" x="18" y="18" width="28" height="28" fill="#fff"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOLLOW + FOOTER -->
+  <div class="band">
+    <div><b data-l="en">New prop firm math on X, every week.</b><b data-l="fr">Des maths de prop firms sur X, chaque semaine.</b><span data-l="en">Threads, calculators, my payouts as they land.</span><span data-l="fr">Threads, calculs, mes payouts au fur et à mesure.</span></div>
+    <a class="btn xbig" href="https://x.com/Sarkel20" data-goatcounter-click="follow-bottom" target="_blank" rel="noopener"><svg class="xlogo"><use href="#x"/></svg><span data-l="en">Follow @Sarkel20</span><span data-l="fr">Suivre @Sarkel20</span></a>
+  </div>
 
   <footer>
-    <span>Sarkel · Prop Firm Math. The math on prop firm rules, one rule at a time.</span>
-    <a href="https://x.com/Sarkel20" target="_blank" rel="noopener">Follow @Sarkel20 on X</a>
+    <span data-l="en">Payout Solver by Sarkel. The math on prop firm rules, one rule at a time.</span>
+    <span data-l="fr">Payout Solver par Sarkel. Les maths des règles de prop firms, une règle à la fois.</span>
+    <nav>
+      <a href="calculator/"><span data-l="en">Calculator</span><span data-l="fr">Calculateur</span></a>
+      <a href="https://x.com/Sarkel20" target="_blank" rel="noopener">X @Sarkel20</a>
+      <a href="#top"><span data-l="en">Back to top ↑</span><span data-l="fr">Haut de page ↑</span></a>
+    </nav>
   </footer>
+</main>
+
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Payout certificate">
+  <button class="lb-btn lb-close" id="lb-close" type="button" aria-label="Close">✕</button>
+  <button class="lb-btn lb-prev" id="lb-prev" type="button" aria-label="Previous">‹</button>
+  <figure><img id="lb-img" alt=""><figcaption><b id="lb-amt"></b><span id="lb-date"></span><span id="lb-pos"></span></figcaption></figure>
+  <button class="lb-btn lb-next" id="lb-next" type="button" aria-label="Next">›</button>
 </div>
+
 <script>
-// PAYOUTS is filled by build.py from payouts.json (one entry per certificate). Everything below is computed from it.
+// PAYOUTS is filled by build_maquette.py from payouts.json (one entry per certificate). Everything below is computed from it.
 var PAYOUTS = [
  {
   "date": "2026-01-05",
@@ -586,63 +1231,204 @@ var PAYOUTS = [
   "h": 772
  }
 ];
+// Opened as the raw source (no payouts injected): say so instead of showing an empty page.
+if (!PAYOUTS.length) document.addEventListener('DOMContentLoaded', function () { document.body.insertAdjacentHTML('afterbegin', '<div style="position:sticky;top:0;z-index:99;background:#ffd166;color:#111;padding:14px 18px;font:600 16px system-ui">Fichier source de la maquette : ouvre plutôt le raccourci « Maquette redesign » dans le dossier « Payout Solver » du Bureau.</div>'); });
+// Testimonials: add {en: '...', fr: '...', who: '...'} entries; the section and its menu link show up once there is one.
+var TESTIMONIALS = [];
 (function () {
-  var fmt = function (v) { return '$' + Math.round(v).toLocaleString('en-US'); };
+  var root = document.documentElement;
+  var $ = function (id) { return document.getElementById(id); };
+  var lang = function () { return root.lang === 'fr' ? 'fr' : 'en'; };
+  var T = function (en, fr) { return lang() === 'fr' ? fr : en; };
+  var loc = function () { return lang() === 'fr' ? 'fr-FR' : 'en-US'; };
+  var fmt = function (v) { var n = Math.round(v).toLocaleString(loc()); return lang() === 'fr' ? n + ' $' : '$' + n; };
+  var fmtK = function (v) { if (v < 1000) return fmt(v); var s = (v / 1000).toFixed(1).replace(/\.0$/, ''); return lang() === 'fr' ? s.replace('.', ',') + ' k$' : '$' + s + 'k'; };
+  var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var day = function (d, o) { return new Date(d + 'T12:00:00').toLocaleDateString(loc(), o || { month: 'short', day: 'numeric', year: 'numeric' }); };
+
   var list = PAYOUTS.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
-  var total = 0, purdia = 0, firms = {}, months = {};
+  var total = 0, purdia = 0, months = {}, pre = 0, oct = 0;
   list.forEach(function (p) {
-    total += p.amount; firms[p.firm] = 1; if (p.firm === 'Purdia') purdia += p.amount;
+    total += p.amount; if (p.firm === 'Purdia') purdia += p.amount; // 90% split firm
     var m = p.date.slice(0, 7); months[m] = (months[m] || 0) + p.amount;
+    if (m < '2026-10') pre += p.amount; else if (m === '2026-10') oct += p.amount;
   });
-  var first = list.length ? new Date(list[list.length - 1].date + 'T12:00:00') : null;
-  document.getElementById('total').textContent = fmt(total);
-  var SPENT = 3500;
-  document.getElementById('multiple').textContent = '+' + Math.round(total / SPENT * 100) + '%';
-  document.getElementById('mult').textContent = (total / SPENT).toFixed(1) + '×';
-  document.getElementById('count').textContent = list.length;
-  document.getElementById('since').textContent = first ? first.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) : '–';
-  document.getElementById('netline').textContent = 'Firms: ' + Object.keys(firms).sort().join(', ') + '. Purdia certificates show the amount before its 90% split: my share of the ' + fmt(purdia) + ' is ' + fmt(purdia * 0.9) + '. After Purdia\'s 10% cut the net return is +' + Math.round((total - purdia * 0.1) / SPENT * 100) + '%. Topstep proofs link to Topstep\'s own verification page (scan the QR code).';
-  // Chart: the last 3 months up to the latest payout month, empty months included. All certificates stay listed below.
-  var last = Object.keys(months).sort().pop(), keys = [];
-  if (last) for (var i = 2; i >= 0; i--) {
-    var dt = new Date(+last.slice(0, 4), +last.slice(5) - 1 - i, 15);
-    var k = dt.getFullYear() + '-' + (dt.getMonth() < 9 ? '0' : '') + (dt.getMonth() + 1); keys.push(k); months[k] = months[k] || 0;
-  }
-  var max = Math.max.apply(null, keys.map(function (k) { return months[k]; }));
-  document.getElementById('months').innerHTML = keys.map(function (k) {
-    var lab = new Date(k + '-15T12:00:00').toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
-    return '<div class="mrow"><span class="lab">' + lab + '</span><span class="bar" style="width:' + (100 * months[k] / max).toFixed(1) + '%"></span><span class="val">' + fmt(months[k]) + '</span></div>';
-  }).join('');
-  var grid = document.getElementById('proofs');
-  var card = function (p) {
-    var d = new Date(p.date + 'T12:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-    return '<a class="proof" href="' + p.file + '" target="_blank" rel="noopener"><img src="' + p.file + '" alt="' + p.firm + ' payout certificate, ' + fmt(p.amount) + ', ' + d + '" width="' + p.w + '" height="' + p.h + '" loading="lazy"><div class="meta"><b>' + fmt(p.amount) + '</b><span>' + p.firm + ' · ' + d + '</span></div></a>';
-  };
-  // Grid: largest first (newest first on ties); totals and the chart above use the date-sorted list.
+  var first = list.length ? list[list.length - 1].date : null;
+  // Months from the first payout month to September 2026, inclusive (the "no model" period).
+  var preMonths = first ? (2026 - +first.slice(0, 4)) * 12 + 9 - +first.slice(5, 7) + 1 : 1;
+  var SPENT = 3500, MODEL = '2026-10';
   var big = list.slice().sort(function (a, b) { return b.amount - a.amount || (a.date < b.date ? 1 : -1); });
-  var SHOWN = 6, open = false, more = document.getElementById('more');
-  var draw = function () {
-    grid.innerHTML = (open ? big : big.slice(0, SHOWN)).map(card).join('');
-    more.textContent = open ? 'Show fewer' : 'Show all ' + list.length + ' certificates';
+  // Every month from the first payout to the latest one, empty months included.
+  var mkeys = [], lastM = Object.keys(months).sort().pop();
+  if (first) { var y = +first.slice(0, 4), mo = +first.slice(5, 7); for (var g = 0; g < 240; g++) { var key = y + '-' + (mo < 10 ? '0' : '') + mo; mkeys.push(key); if (key >= lastM) break; if (++mo > 12) { mo = 1; y++; } } }
+  var maxM = Math.max.apply(null, mkeys.map(function (k) { return months[k] || 0; }).concat([1]));
+  var grid = $('proofs'), more = $('more'), open = false, counted = false;
+  var SHOWN = window.matchMedia('(min-width: 900px)').matches ? 8 : 4;
+
+  // Hero fan: the three largest certificates.
+  $('fan').innerHTML = big.slice(0, 3).map(function (p) { return '<img src="' + p.file + '" alt="" width="' + p.w + '" height="' + p.h + '">'; }).join('');
+
+  var render = function () {
+    var set = function (id, v) { $(id).textContent = v; };
+    var mult = '+' + Math.round(total / SPENT * 100) + ' %'.slice(lang() === 'fr' ? 0 : 1);
+    if (counted) set('h-total', fmt(total));
+    set('h-count', list.length); set('h-mult', mult);
+    document.querySelectorAll('.n-count').forEach(function (el) { el.textContent = list.length; });
+    $('pc-all').textContent = T('See all ' + list.length + ' certificates →', 'Voir les ' + list.length + ' certificats →');
+    // Hero sparkline (same months as the payouts chart).
+    $('spark').innerHTML = mkeys.map(function (k) { var v = months[k] || 0; return '<i class="' + (k >= MODEL ? 'on' : v ? '' : 'zero') + '" style="height:' + Math.max(6, 100 * v / maxM).toFixed(1) + '%"></i>'; }).join('');
+    $('spark-l').innerHTML = mkeys.length ? '<span>' + esc(day(mkeys[0] + '-15', { month: 'short', year: 'numeric' })) + '</span><span>' + esc(day(lastM + '-15', { month: 'short', year: 'numeric' })) + '</span>' : '';
+    $('latest').innerHTML = list.slice(0, 3).map(function (p) {
+      return '<button class="pc-row" type="button" data-i="' + big.indexOf(p) + '"><img src="' + p.file + '" alt="" loading="lazy"><b>' + fmt(p.amount) + '</b><span>' + esc(day(p.date)) + '</span></button>';
+    }).join('');
+    // Two lanes: monthly rate before the model vs the first month with it.
+    var avg = pre / preMonths;
+    set('s-pre', fmt(pre)); set('s-pre-m', T('in ' + preMonths + ' months', 'en ' + preMonths + ' mois'));
+    $('s-pre-avg').innerHTML = '~' + esc(fmt(avg)) + '<small>' + T('/ month', '/ mois') + '</small>';
+    set('s-oct', fmt(oct)); set('oct2', fmt(oct));
+    var mx = Math.max(avg, oct, 1);
+    $('bar-pre').style.width = (100 * avg / mx).toFixed(1) + '%'; $('bar-oct').style.width = (100 * oct / mx).toFixed(1) + '%';
+    // Payout stats.
+    set('spent', '~' + fmt(SPENT)); set('total', fmt(total)); set('multiple', mult); set('count', list.length);
+    set('since', first ? day(first, { month: 'short', year: 'numeric' }) : '–');
+    var net = Math.round((total - purdia * 0.1) / SPENT * 100);
+    // No firm names on the page; one line on eval fees and one on the 10% split, so the +366% adds up.
+    set('netline', T(
+      fmt(total) + ' is what I kept after earning back every eval fee: +' + net + '% net of a 10% profit split on some certificates.',
+      fmt(total) + ', c\'est ce que j\'ai gardé une fois chaque frais d\'éval remboursé : +' + net + ' % net d\'un partage de 10 % sur certains certificats.'));
+    // Monthly bars, every month since the first payout; the model months are highlighted.
+    var narrow = window.matchMedia('(max-width: 600px)').matches;
+    $('mchart').innerHTML = mkeys.map(function (k) {
+      var v = months[k] || 0, cls = 'mc' + (k >= MODEL ? ' on' : '') + (k === MODEL ? ' first-on' : '') + (v ? '' : ' zero');
+      return '<div class="' + cls + '">' + (k === MODEL ? '<span class="mtag">' + T('The model →', 'Le modèle →') + '</span>' : '') +
+        '<div class="mbw"><span class="mv">' + (v ? (narrow ? fmtK(v) : fmt(v)) : '–') + '</span><span class="mb" style="--v:' + (v / maxM).toFixed(3) + '"></span></div>' +
+        '<span class="ml">' + esc(day(k + '-15', { month: narrow ? 'narrow' : 'short' })) + '</span></div>';
+    }).join('');
+    // Certificates: largest first (newest first on ties); the link still opens the file without JS.
+    grid.innerHTML = (open ? big : big.slice(0, SHOWN)).map(function (p, i) {
+      var d = day(p.date);
+      return '<a class="proof" href="' + p.file + '" target="_blank" rel="noopener" data-i="' + i + '"><img src="' + p.file + '" alt="Payout certificate, ' + fmt(p.amount) + ', ' + d + '" width="' + p.w + '" height="' + p.h + '" loading="lazy"><div class="meta"><b>' + fmt(p.amount) + '</b><span>' + d + '</span></div></a>';
+    }).join('');
+    more.textContent = open ? T('Show fewer', 'Afficher moins') : T('Show all ' + list.length + ' certificates', 'Afficher les ' + list.length + ' certificats');
+    if (TESTIMONIALS.length) {
+      $('testimonials').hidden = false; document.querySelectorAll('.testi-link').forEach(function (a) { a.hidden = false; });
+      $('quotes').innerHTML = TESTIMONIALS.map(function (q) { return '<div class="quote glass"><p>“' + esc(q[lang()] || q.en) + '”</p><span>' + esc(q.who) + '</span></div>'; }).join('');
+    }
+    $('lang').textContent = lang() === 'fr' ? 'EN' : 'FR';
+    if (lb.classList.contains('open')) show(cur);
   };
-  more.addEventListener('click', function () {
-    open = !open; draw();
-    if (!open) grid.scrollIntoView({ block: 'nearest' });
-  });
-  draw();
-  // Dark by default; the header button switches to light and remembers it (per browser).
-  var root = document.documentElement, btn = document.getElementById('theme');
-  var setTheme = function (t) {
-    if (t === 'light') root.setAttribute('data-theme', 'light'); else root.removeAttribute('data-theme');
-    btn.textContent = t === 'light' ? 'Dark' : 'Light';
+  more.addEventListener('click', function () { open = !open; render(); if (!open) grid.scrollIntoView({ block: 'nearest' }); });
+
+  // Lightbox over the certificates (largest first), with arrows, keys and swipe-free buttons.
+  var lb = $('lb'), cur = 0, lastFocus = null;
+  var show = function (i) {
+    cur = (i + big.length) % big.length; var p = big[cur];
+    $('lb-img').src = p.file; $('lb-img').alt = T('Payout certificate, ', 'Certificat de payout, ') + fmt(p.amount);
+    $('lb-amt').textContent = fmt(p.amount); $('lb-date').textContent = day(p.date); $('lb-pos').textContent = (cur + 1) + ' / ' + big.length;
   };
-  try { setTheme(localStorage.getItem('theme')); } catch (e) { setTheme(null); }
-  btn.addEventListener('click', function () {
-    var t = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    setTheme(t);
-    try { localStorage.setItem('theme', t); } catch (e) {}
+  var openLb = function (i) { lastFocus = document.activeElement; show(i); lb.classList.add('open'); document.body.style.overflow = 'hidden'; $('lb-close').focus(); };
+  var closeLb = function () { lb.classList.remove('open'); document.body.style.overflow = ''; if (lastFocus) lastFocus.focus(); };
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('.proof, .pc-row'); if (!a || e.metaKey || e.ctrlKey) return;
+    e.preventDefault(); openLb(+a.getAttribute('data-i'));
   });
+  $('lb-close').addEventListener('click', closeLb);
+  $('lb-prev').addEventListener('click', function () { show(cur - 1); });
+  $('lb-next').addEventListener('click', function () { show(cur + 1); });
+  lb.addEventListener('click', function (e) { if (e.target === lb) closeLb(); });
+  document.addEventListener('keydown', function (e) {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLb(); else if (e.key === 'ArrowLeft') show(cur - 1); else if (e.key === 'ArrowRight') show(cur + 1);
+  });
+
+  // Language: saved choice, else the browser's; the button switches and remembers it.
+  var setLang = function (l) { root.lang = l === 'fr' ? 'fr' : 'en'; render(); };
+  var saved = null; try { saved = localStorage.getItem('lang'); } catch (e) {}
+  setLang(saved || ((navigator.language || '').slice(0, 2) === 'fr' ? 'fr' : 'en'));
+  $('lang').addEventListener('click', function () {
+    var l = lang() === 'fr' ? 'en' : 'fr'; setLang(l); try { localStorage.setItem('lang', l); } catch (e) {}
+  });
+  var rt0; addEventListener('resize', function () { clearTimeout(rt0); rt0 = setTimeout(render, 200); });
+
+  // Small-screen section menu: open/close, close on pick or outside click.
+  var mb = $('menu-btn'), menu = $('menu');
+  var shut = function () { menu.classList.remove('open'); mb.setAttribute('aria-expanded', 'false'); };
+  mb.addEventListener('click', function (e) { e.stopPropagation(); var o = menu.classList.toggle('open'); mb.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+  menu.addEventListener('click', shut);
+  document.addEventListener('click', function (e) { if (!menu.contains(e.target)) shut(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') shut(); });
+  // Highlight the section in view, in the top nav and the menu.
+  if ('IntersectionObserver' in window) {
+    var links = document.querySelectorAll('#menu a[href^="#"], #nav a[href^="#"]');
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        links.forEach(function (a) { a.classList.toggle('on', a.getAttribute('href') === '#' + en.target.id); });
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    document.querySelectorAll('section[id]').forEach(function (sec) { io.observe(sec); });
+  }
+
+  // Trades carousel: arrow buttons scroll one card; disabled at the ends.
+  var track = $('track'), cp = $('car-prev'), cn = $('car-next');
+  var stepW = function () { var c = track.querySelector('.trade'); return c ? c.getBoundingClientRect().width + 16 : 300; };
+  var upd = function () { cp.disabled = track.scrollLeft < 4; cn.disabled = track.scrollLeft + track.clientWidth > track.scrollWidth - 4; };
+  cp.addEventListener('click', function () { track.scrollBy({ left: -stepW() }); });
+  cn.addEventListener('click', function () { track.scrollBy({ left: stepW() }); });
+  track.addEventListener('scroll', upd, { passive: true }); addEventListener('resize', upd); upd();
+
+  // Background: random walks scattered across the page, absorbed at a floor (rose) or a target (blue).
+  // Seeded, so the picture never changes; drawn progressively on first load. Colours come from CSS (--p-*).
+  var cv = $('paths'), drawn = false, gen = 0;
+  function drawPaths() {
+    var my = ++gen;
+    var w = innerWidth, h = innerHeight, dpr = Math.min(devicePixelRatio || 1, 2), cs = getComputedStyle(root);
+    var col = function (n) { return cs.getPropertyValue(n).trim(); };
+    cv.width = w * dpr; cv.height = h * dpr;
+    var c = cv.getContext('2d'); c.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var seed = 20; var rnd = function () { seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
+    var gauss = function () { return Math.sqrt(-2 * Math.log(rnd() + 1e-9)) * Math.cos(2 * Math.PI * rnd()); };
+    var top = Math.max(76, h * 0.085), floor = h * 0.955, dx = 6, sig = h * 0.016, lw = parseFloat(col('--p-w')) || 1.3, paths = [];
+    for (var k = 0; k < 72; k++) {
+      var x = rnd() * (w + 200) - 200, yy = top + (floor - top) * (0.15 + 0.7 * rnd()), stop = x + 400 + 800 * rnd(), pts = [[x, yy]], end = 0;
+      while (x < stop) { x += dx; yy += gauss() * sig; pts.push([x, yy]); if (yy <= top) { end = 1; break; } if (yy >= floor) { end = -1; break; } }
+      paths.push({ pts: pts, end: end });
+    }
+    var frame = function (f) {
+      c.clearRect(0, 0, w, h);
+      c.setLineDash([6, 8]); c.lineWidth = 1.5;
+      c.strokeStyle = col('--p-up-line'); c.beginPath(); c.moveTo(0, top); c.lineTo(w, top); c.stroke();
+      c.strokeStyle = col('--p-down-line'); c.beginPath(); c.moveTo(0, floor); c.lineTo(w, floor); c.stroke();
+      c.setLineDash([]);
+      paths.forEach(function (P) {
+        var n = Math.max(2, Math.round(P.pts.length * f));
+        c.beginPath(); for (var i = 0; i < n; i++) { if (i) c.lineTo(P.pts[i][0], P.pts[i][1]); else c.moveTo(P.pts[i][0], P.pts[i][1]); }
+        var done = n >= P.pts.length;
+        c.lineWidth = P.end && done ? lw + 0.6 : lw;
+        c.strokeStyle = !done || !P.end ? col('--p-mid') : P.end === 1 ? col('--p-up') : col('--p-down');
+        c.stroke();
+        if (P.end && done) { var q = P.pts[P.pts.length - 1]; c.fillStyle = P.end === 1 ? col('--p-up') : col('--p-down'); c.beginPath(); c.arc(q[0], q[1], 2.6, 0, 7); c.fill(); }
+      });
+    };
+    var still = drawn || matchMedia('(prefers-reduced-motion: reduce)').matches;
+    drawn = true;
+    if (still) { frame(1); return; }
+    var t0 = performance.now(), D = 2200;
+    (function step(now) { if (my !== gen) return; var f = Math.min(1, (now - t0) / D); frame(1 - Math.pow(1 - f, 3)); if (f < 1) requestAnimationFrame(step); })(t0);
+  }
+  var rt; addEventListener('resize', function () { clearTimeout(rt); rt = setTimeout(drawPaths, 150); });
+
+  // Sections fade in as they come into view.
+  if ('IntersectionObserver' in window) {
+    var rv = new IntersectionObserver(function (es) { es.forEach(function (en) { if (en.isIntersecting) { en.target.classList.add('in'); rv.unobserve(en.target); } }); }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('main > section, main > .band').forEach(function (el) { el.classList.add('reveal'); rv.observe(el); });
+  }
+  // Hero total counts up once on load (straight to the value when motion is reduced).
+  var ht = $('h-total');
+  counted = true; ht.textContent = fmt(total);
+  drawPaths();
 })();
 </script>
+<script data-goatcounter="https://sarkel20.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
