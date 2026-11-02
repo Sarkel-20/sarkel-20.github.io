@@ -15,6 +15,8 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://payoutsolver.com/og.png">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://payoutsolver.com/">
 <meta name="twitter:site" content="@Sarkel20">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -97,7 +99,7 @@ section, header { scroll-margin-top: 76px; }
 @media (max-width: 939px) { .hero { grid-template-columns: 1fr; } }
 .pill { display: inline-flex; align-items: center; gap: 10px; align-self: flex-start; font-weight: 700; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: #ddd3ff; background: rgba(255, 255, 255, .05); border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px 7px 10px; }
 .pill i { width: 8px; height: 8px; border-radius: 50%; background: var(--blue); box-shadow: 0 0 0 4px rgba(90, 170, 255, .18), 0 0 12px var(--blue); }
-.hero-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.hero-main { display: flex; flex-direction: column; gap: 22px; min-width: 0; container-type: inline-size; }
 h1 { font-weight: 800; font-size: clamp(42px, 6.4vw, 80px); line-height: 1.0; margin: 0; letter-spacing: -0.035em; text-wrap: balance;
   background: linear-gradient(90deg, #ffffff 0%, #d4c6ff 55%, #8fc3ff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: .06em; }
 .lede { color: var(--ink2); max-width: 58ch; font-size: clamp(16.5px, 1.5vw, 19px); line-height: 1.6; }
@@ -117,9 +119,10 @@ h1 { font-weight: 800; font-size: clamp(42px, 6.4vw, 80px); line-height: 1.0; ma
 .strip b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; background: var(--title); -webkit-background-clip: text; background-clip: text; color: transparent; }
 .strip > div > span { color: var(--muted); font-size: 13.5px; }
 @media (max-width: 520px) { .strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } .strip > div { padding: 0 10px; } .strip b { font-size: 22px; } .strip > div > span { font-size: 12.5px; display: block; line-height: 1.35; margin-top: 2px; } }
+@container (max-width: 600px) { .strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); } .strip > div { padding: 0 10px; } .strip b { font-size: 22px; } .strip > div > span { font-size: 12.5px; display: block; line-height: 1.35; margin-top: 2px; } }
 
 /* proof card */
-.proofcard-wrap { position: relative; padding-top: 92px; min-width: 0; }
+.proofcard-wrap { position: relative; padding-top: 92px; min-width: 0; container-type: inline-size; }
 .fan { position: absolute; top: 0; right: 2%; width: 80%; height: 200px; pointer-events: none; }
 .fan img { position: absolute; top: 0; width: 62%; border-radius: 12px; box-shadow: 0 22px 50px rgba(0, 0, 0, .6); filter: brightness(.9) saturate(.9); border: 1px solid rgba(255, 255, 255, .5); }
 .fan img:nth-child(1) { left: 0; transform: rotate(-3deg) translateY(18px); }
@@ -138,11 +141,17 @@ h1 { font-weight: 800; font-size: clamp(42px, 6.4vw, 80px); line-height: 1.0; ma
 .spark i.on { background: var(--accent); box-shadow: 0 0 18px rgba(110, 120, 255, .55); }
 .spark i.zero { background: rgba(183, 162, 255, .12); }
 .spark-l { display: flex; justify-content: space-between; font-size: 12px; color: var(--dim); margin-top: -10px; }
-.pc-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.pc-stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+@media (max-width: 520px) { .pc-stats { grid-template-columns: 1fr 1fr; gap: 8px; } .pc-stats div:last-child { grid-column: 1 / -1; } .pc-stats b { font-size: 24px; } }
+@container (max-width: 480px) { .pc-stats { grid-template-columns: 1fr 1fr; gap: 8px; } .pc-stats div:last-child { grid-column: 1 / -1; } .pc-stats b { font-size: 24px; } }
 .pc-stats div { background: rgba(255, 255, 255, .045); border: 1px solid rgba(175, 150, 255, .22); border-radius: 14px; padding: 12px 14px; }
 .pc-stats b { display: block; font-size: 26px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.15; font-variant-numeric: tabular-nums; }
 .pc-stats span { color: var(--muted); font-size: 13px; line-height: 1.35; display: block; }
 .pc-list h4 { margin: 0 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--dim); }
+.pc-month { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.pc-month b { font-size: 28px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; font-variant-numeric: tabular-nums; color: #fff; }
+.pc-month span { color: var(--ink2); font-size: 14px; }
+.pc-last { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
 .pc-row { width: 100%; display: flex; align-items: center; gap: 12px; padding: 9px 0; border: 0; border-top: 1px solid rgba(175, 150, 255, .14); background: none; color: inherit; font: inherit; cursor: zoom-in; text-align: left; }
 .pc-row img { width: 46px; height: 33px; object-fit: cover; object-position: top left; border-radius: 5px; flex: none; border: 1px solid rgba(255, 255, 255, .3); }
 .pc-row b { font-size: 16px; font-variant-numeric: tabular-nums; }
@@ -264,6 +273,7 @@ h2 .sep { color: rgba(196, 179, 255, .45); -webkit-text-fill-color: rgba(196, 17
 .proof .meta { padding: 10px 14px 12px; display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .proof .meta b { font-size: 17px; font-variant-numeric: tabular-nums; }
 .proof .meta span { color: var(--muted); font-size: 13px; white-space: nowrap; }
+.proof .meta { flex-wrap: wrap; } .proof .meta .acc { flex-basis: 100%; color: #c4b3ff; font-size: 12.5px; }
 @media (max-width: 520px) { .proof .meta { padding: 8px 10px 10px; flex-direction: column; gap: 0; } .proof .meta b { font-size: 15.5px; } .proof .meta span { font-size: 12px; } }
 .more-btn { display: flex; margin: 22px auto 0; font: 600 15px var(--font); color: var(--violet); background: rgba(255, 255, 255, .04); border: 1px solid var(--line2); border-radius: 999px; padding: 12px 24px; cursor: pointer; }
 .more-btn:hover { background: var(--violet-soft); }
@@ -354,6 +364,10 @@ h2 .sep { color: rgba(196, 179, 255, .45); -webkit-text-fill-color: rgba(196, 17
 .card h4 { margin: 0; font-size: 17px; font-weight: 700; color: var(--ink); }
 .card p { color: var(--muted); font-size: 14.5px; }
 .card .tag { margin-bottom: 4px; }
+.princ .pr { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px 24px; }
+.princ .pr p { margin: 0; line-height: 1.5; }
+.princ .pr b { color: var(--ink); }
+@media (max-width: 560px) { .princ .pr { grid-template-columns: 1fr; } }
 
 /* ---------- why me + coaching ---------- */
 .why { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
@@ -366,20 +380,63 @@ h2 .sep { color: rgba(196, 179, 255, .45); -webkit-text-fill-color: rgba(196, 17
 .wt p { color: var(--ink2); font-size: 16px; line-height: 1.55; }
 .wt { padding: 26px 24px; }
 .wt.no h4 { color: #ffd1dc; }
+@media (min-width: 1100px) { .why.three { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.why.three { margin-bottom: 18px; }
+@media (max-width: 899px) { #work { display: flex; flex-direction: column; } #work .sh { order: 0; } #work .offer { order: 1; margin-top: 0; } #work .why.three { order: 2; margin: 18px 0 0; } #work > .note { order: 3; } }
 .wt.no::before { background: linear-gradient(90deg, #ff7b98, rgba(255, 123, 152, 0)); }
-.offer { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); padding: clamp(22px, 3.4vw, 44px); border-radius: 28px; background: linear-gradient(150deg, rgba(139, 108, 255, .22), rgba(14, 11, 30, .7) 55%, rgba(79, 157, 255, .1)); border: 1px solid rgba(175, 150, 255, .5); box-shadow: 0 40px 110px rgba(60, 40, 170, .28); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
+.offer { margin-top: 12px; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); padding: clamp(22px, 3.4vw, 44px); border-radius: 28px; background: linear-gradient(150deg, rgba(139, 108, 255, .22), rgba(14, 11, 30, .7) 55%, rgba(79, 157, 255, .1)); border: 1px solid rgba(175, 150, 255, .5); box-shadow: 0 40px 110px rgba(60, 40, 170, .28); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
 @media (max-width: 899px) { .offer { grid-template-columns: 1fr; } }
-.offer-l { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
-.offer .lead { font-size: clamp(19px, 2vw, 24px); color: var(--ink); font-weight: 700; letter-spacing: -0.015em; line-height: 1.35; }
+.offer-l { display: flex; flex-direction: column; gap: 22px; min-width: 0; }
+.offer .lead { font-size: clamp(19px, 2vw, 26px); color: var(--ink); font-weight: 700; letter-spacing: -0.015em; line-height: 1.35; }
 .who { color: var(--ink2); font-weight: 500; border-left: 3px solid #8b6cff; padding-left: 14px; font-size: 15.5px; }
 .ol-h { font-size: 12px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--dim); }
-.items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.items { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 @media (max-width: 560px) { .items { grid-template-columns: 1fr; } }
-.item { align-content: start; display: grid; grid-template-columns: 22px 1fr; gap: 2px 10px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(175, 150, 255, .22); border-radius: 14px; padding: 13px 14px; font-size: 14px; color: var(--muted); }
+.item { align-content: start; display: grid; grid-template-columns: 22px 1fr; gap: 2px 10px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(175, 150, 255, .22); border-radius: 14px; padding: 15px 16px; font-size: 14px; color: var(--muted); }
 .item svg { width: 18px; height: 18px; color: var(--blue); grid-row: span 2; margin-top: 2px; }
 .item b { color: var(--ink); font-size: 15px; }
 .item.wide { grid-column: 1 / -1; }
-.offer-r { display: flex; flex-direction: column; gap: 18px; background: rgba(5, 5, 11, .45); border: 1px solid rgba(175, 150, 255, .28); border-radius: 22px; padding: clamp(18px, 2.4vw, 28px); min-width: 0; }
+.plan { position: relative; overflow: hidden; background: #f6f4ff; color: #1a1530; border-radius: 18px; padding: 18px 18px 16px; box-shadow: 0 18px 50px rgba(0, 0, 0, .45); border: 1px solid rgba(255, 255, 255, .6); }
+.plan::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--accent); }
+.plan-h { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+.plan-t { display: flex; flex-direction: column; gap: 2px; }
+.plan-h b { font-size: 16px; font-weight: 800; letter-spacing: -0.01em; color: #1a1530; line-height: 1.2; }
+.plan-h small { font-size: 12px; color: #6a6490; }
+.plan-h .tag.dim { background: rgba(26, 21, 48, .07); color: #4a4470; border-color: rgba(26, 21, 48, .14); margin: 0; }
+.plan-body { display: flex; flex-direction: column; gap: 10px; }
+.pl-sec { display: flex; flex-direction: column; gap: 6px; }
+.pl-sh { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; font-size: 10.5px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: #6b4dff; border-bottom: 1px solid rgba(107, 77, 255, .22); padding-bottom: 5px; }
+.pl-sh i { font-style: normal; color: #8a84ad; font-weight: 700; letter-spacing: .06em; }
+.plan .v { display: inline-block; color: #2a2450; font-weight: 800; font-variant-numeric: tabular-nums; white-space: nowrap; background: rgba(26, 21, 48, .07); border-radius: 5px; padding: 0 6px; filter: blur(4px); user-select: none; -webkit-user-select: none; }
+.pl-acc { display: flex; flex-direction: column; gap: 6px; }
+.pl-acc > div { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto auto; align-items: center; gap: 10px; background: #fff; border: 1px solid rgba(26, 21, 48, .09); border-radius: 10px; padding: 8px 10px; font-size: 13px; }
+.pl-acc em { font-style: normal; width: 22px; height: 22px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 800; color: #fff; background: var(--chip); }
+.pl-acc > div > div { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.pl-acc > div > div > b { font-size: 13px; font-weight: 700; color: #1a1530; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-acc .bar { display: block; height: 4px; border-radius: 2px; background: rgba(26, 21, 48, .09); position: relative; overflow: hidden; }
+.pl-acc .bar::after { content: ''; position: absolute; inset: 0; width: var(--w); border-radius: 2px; background: var(--accent); }
+.pl-acc .v { font-size: 13px; }
+.pl-stages { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.pl-stages > div { display: flex; flex-direction: column; align-items: center; gap: 3px; text-align: center; background: #fff; border: 1px solid rgba(26, 21, 48, .09); border-radius: 10px; padding: 9px 6px; }
+.pl-stages > div > span { font-size: 10.5px; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; color: #6a6490; line-height: 1.2; }
+.pl-stages .v { font-size: 15px; }
+.pl-stages small { font-size: 11.5px; color: #6a6490; font-weight: 600; }
+.pl-stages small .v { font-size: 11.5px; padding: 0 4px; }
+.pl-stages > div.on { border-color: #8b6cff; box-shadow: 0 0 0 2px rgba(139, 108, 255, .16); }
+.pl-line { margin: 0; font-size: 13px; color: #3a3560; line-height: 1.55; }
+.pl-line .v { font-size: 12.5px; }
+.pl-rows { display: flex; flex-direction: column; }
+.pl-rows > div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 6px 0; border-top: 1px solid rgba(26, 21, 48, .1); font-size: 13px; color: #3a3560; }
+.pl-rows > div:first-child { border-top: 0; padding-top: 2px; }
+.pl-kpi { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+.pl-kpi > div { display: flex; flex-direction: column; gap: 3px; background: linear-gradient(135deg, rgba(139, 108, 255, .12), rgba(79, 157, 255, .08)); border: 1px solid rgba(107, 77, 255, .18); border-radius: 10px; padding: 9px 10px; }
+.pl-kpi .v { font-size: 16px; align-self: flex-start; }
+.pl-kpi span { font-size: 11px; color: #5b5680; line-height: 1.3; }
+.plan-foot { display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 11px; color: #8a84ad; border-top: 1px dashed rgba(26, 21, 48, .2); padding-top: 8px; }
+.plan-f { margin: 12px 0 0; font-size: 12.5px; color: #5b5680; line-height: 1.45; }
+@container (max-width: 330px) { .pl-acc > div > div > b { white-space: normal; font-size: 12.5px; line-height: 1.25; } .pl-kpi { grid-template-columns: 1fr; } .pl-kpi > div { flex-direction: row; align-items: baseline; gap: 8px; } .pl-acc > div { grid-template-columns: 22px minmax(0, 1fr) auto; } .pl-acc > div > .v:last-child { display: none; } .pl-sh i { display: none; } }
+.offer-r { display: flex; flex-direction: column; gap: 18px; background: rgba(5, 5, 11, .45); border: 1px solid rgba(175, 150, 255, .28); border-radius: 22px; padding: clamp(18px, 2.4vw, 28px); min-width: 0; container-type: inline-size; }
+.offer-r .btn.big { margin-top: auto; }
 .offer-r h3 { margin: 0; font-size: 18px; }
 .hiw { display: grid; gap: 0; }
 .hiw > div { display: grid; grid-template-columns: 40px 1fr; gap: 2px 14px; padding: 12px 0; position: relative; }
@@ -387,6 +444,8 @@ h2 .sep { color: rgba(196, 179, 255, .45); -webkit-text-fill-color: rgba(196, 17
 .hiw > div:not(:last-child)::after { content: ''; position: absolute; left: 17.5px; top: 48px; bottom: -12px; width: 1px; background: rgba(175, 150, 255, .4); }
 .hiw b { font-size: 15.5px; }
 .hiw span { color: var(--muted); font-size: 14.5px; }
+.offer-l .hiw { margin-top: -8px; }
+.hiw.row { gap: 12px; } .hiw.row > div { grid-template-columns: 30px 1fr; gap: 2px 12px; padding: 14px 16px; background: rgba(255, 255, 255, .04); border: 1px solid rgba(175, 150, 255, .22); border-radius: 14px; align-content: start; } .hiw.row em { width: 30px; height: 30px; font-size: 13.5px; } .hiw.row > div:not(:last-child)::after { display: none; } .hiw.row b { font-size: 15px; } .hiw.row span { font-size: 14px; line-height: 1.45; }
 .btn.big { height: 56px; font-size: 16.5px; width: 100%; }
 .spots { color: var(--ink2); font-size: 14.5px; text-align: center; }
 .spots b { color: #fff; }
@@ -500,12 +559,11 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
 <div class="topbar"><div class="container tb-in">
   <a class="brand" href="#top"><svg><use href="#logo"/></svg><span>Payout Solver<span class="sub"> · by Sarkel</span></span></a>
   <nav class="nav" id="nav" aria-label="Sections">
-    <a href="#lanes"><span data-l="en">Two lanes</span><span data-l="fr">Deux activités</span></a>
     <a href="#payouts">Payouts</a>
     <a href="#method"><span data-l="en">Method</span><span data-l="fr">Méthode</span></a>
     <a href="#work">Coaching</a>
-    <a href="#trades">Trades</a>
     <a href="#about"><span data-l="en">About</span><span data-l="fr">Parcours</span></a>
+    <a href="#trades">Trading</a>
     <a href="#tools"><span data-l="en">Tools</span><span data-l="fr">Outils</span></a>
   </nav>
   <button class="tb-btn icon" id="lang" type="button" aria-label="Language">FR</button>
@@ -514,12 +572,11 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
   <div class="tb-menu">
     <button class="tb-btn icon" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu" aria-label="Sections"><span class="bars"><i></i><i></i><i></i></span></button>
     <div class="tb-drop" id="menu">
-      <a href="#lanes"><span data-l="en">Two lanes</span><span data-l="fr">Deux activités</span> <small data-l="en">live vs props</small><small data-l="fr">live vs props</small></a>
       <a href="#payouts">Payouts <small><span class="n-count">–</span> <span data-l="en">certificates</span><span data-l="fr">certificats</span></small></a>
       <a href="#method"><span data-l="en">My method</span><span data-l="fr">Ma méthode</span></a>
       <a href="#work"><span data-l="en">Work with me</span><span data-l="fr">Travailler avec moi</span> <small>1:1</small></a>
-      <a href="#trades">Trades <small data-l="en">charts</small><small data-l="fr">graphiques</small></a>
       <a href="#about"><span data-l="en">About me</span><span data-l="fr">Qui suis-je</span></a>
+      <a href="#trades">Trading <small data-l="en">charts</small><small data-l="fr">graphiques</small></a>
       <a href="#testimonials" class="testi-link" hidden><span data-l="en">Testimonials</span><span data-l="fr">Témoignages</span></a>
       <a href="#tools"><span data-l="en">Free tools</span><span data-l="fr">Outils gratuits</span></a>
       <a href="calculator/"><span data-l="en">Calculator</span><span data-l="fr">Calculateur</span> <small>↗</small></a>
@@ -532,14 +589,14 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
   <!-- HERO -->
   <header id="top" class="hero">
     <div class="hero-main">
-      <span class="pill"><i></i>Payout Solver · by Sarkel · @Sarkel20</span>
+      <span class="pill"><i></i>@Sarkel20 · NQ futures</span>
       <h1><span data-l="en">I do the math on prop firm rules.</span><span data-l="fr">Je modélise les prop firms avec des maths.</span></h1>
-      <p class="lede" data-l="en">NQ futures trader, on my own capital. Separately, since October, I've traded prop firms with Payout Solver, my model of every rule that decides whether you get paid: drawdown floors, trailing, consistency, payout policies.</p>
-      <p class="lede" data-l="fr">Trader NQ futures, sur mon propre capital. À côté, depuis octobre, je trade les prop firms avec Payout Solver, mon modèle de toutes les règles qui décident si tu es payé : plancher de drawdown, trailing, consistency, conditions de payout.</p>
+      <p class="lede" data-l="en">A lot of traders don't fail prop firms for lack of a strategy: the rules beat them first. I built Payout Solver, a model of every rule that decides whether you get paid, and I trade my own prop accounts with it.</p>
+      <p class="lede" data-l="fr">Beaucoup de traders ne ratent pas les prop firms par manque de stratégie : ce sont les règles qui les battent d'abord. J'ai construit Payout Solver, un modèle de toutes les règles qui décident si tu es payé, et je trade mes propres comptes prop avec.</p>
       <div class="cta-row">
         <a class="btn primary" href="calculator/"><span data-l="en">Check your eval odds</span><span data-l="fr">Calcule tes chances en éval</span><svg class="ar"><use href="#ar"/></svg></a>
-        <a class="btn x" href="https://x.com/Sarkel20" data-goatcounter-click="follow-hero" target="_blank" rel="noopener"><svg class="xlogo"><use href="#x"/></svg><span data-l="en">Follow @Sarkel20</span><span data-l="fr">Suivre @Sarkel20</span></a>
-        <a class="btn ghost" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-goatcounter-click="dm-hero" target="_blank" rel="noopener"><span data-l="en">DM me</span><span data-l="fr">M'écrire</span></a>
+        <a class="btn x" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-goatcounter-click="dm-hero" target="_blank" rel="noopener"><span data-l="en">DM me</span><span data-l="fr">M'écrire</span></a>
+        <a class="btn ghost" href="https://x.com/Sarkel20" data-goatcounter-click="follow-hero" target="_blank" rel="noopener"><svg class="xlogo"><use href="#x"/></svg><span data-l="en">Follow @Sarkel20</span><span data-l="fr">Suivre @Sarkel20</span></a>
       </div>
       <div class="strip">
         <div><b><span data-l="en">190B+</span><span data-l="fr">190 Md+</span></b><span data-l="en">simulated account paths</span><span data-l="fr">trajectoires simulées</span></div>
@@ -555,90 +612,31 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
           <span class="pc-lab" data-l="en">Prop firm payouts</span><span class="pc-lab" data-l="fr">Payouts prop firms</span>
           <span class="pc-live"><i></i><span data-l="en">Updated with every payout</span><span data-l="fr">Mis à jour à chaque payout</span></span>
         </div>
-        <div class="pc-total"><b id="h-total">–</b><span data-l="en">in prop firm payouts, net of eval fees</span><span data-l="fr">de payouts prop firms, frais d'éval déduits</span></div>
+        <div class="pc-total"><b id="h-total">–</b><span data-l="en">in prop firm payouts, after eval fees</span><span data-l="fr">de payouts prop firms, après frais d'éval</span></div>
         <div class="spark" id="spark" aria-hidden="true"></div>
         <div class="spark-l" id="spark-l"></div>
         <div class="pc-stats">
-          <div><b id="h-count">–</b><span data-l="en">payout certificates, all on this page</span><span data-l="fr">certificats de payout, tous sur cette page</span></div>
-          <div><b id="h-mult">–</b><span data-l="en">net return on eval spend</span><span data-l="fr">rendement net sur les évals</span></div>
+          <div><b id="spent">–</b><span data-l="en">spent on evals</span><span data-l="fr">dépensés en évals</span></div>
+          <div><b id="h-count">–</b><span data-l="en">payout certificates</span><span data-l="fr">certificats de payout</span></div>
+          <div><b id="h-mult">–</b><span data-l="en">return on eval spend</span><span data-l="fr">rendement sur les évals</span></div>
         </div>
         <div class="pc-list">
-          <h4 data-l="en">Latest payouts</h4><h4 data-l="fr">Derniers payouts</h4>
-          <div id="latest"></div>
+          <h4 data-l="en">Last month</h4><h4 data-l="fr">Le mois dernier</h4>
+          <div class="pc-month"><b id="h-mtot">–</b><span id="h-mlab">–</span></div>
+          <p class="pc-last" id="h-last">–</p>
         </div>
         <a class="pc-all" href="#payouts" id="pc-all">–</a>
       </div>
     </div>
   </header>
 
-  <!-- TWO LANES -->
-  <section id="lanes" class="sec">
-    <div class="sh">
-      <h2><span data-l="en"><span class="k">Two lanes</span><span class="sep">·</span>Kept apart</span><span data-l="fr"><span class="k">Deux activités</span><span class="sep">·</span>Bien séparées</span></h2>
-      <p class="lead2"><span data-l="en">Live trader first. Then I turned prop firms into a math problem.</span><span data-l="fr">D'abord trader live. Ensuite, j'ai modélisé les prop firms.</span></p>
-    </div>
-    <div class="lanes">
-      <div class="lane live glass">
-        <div class="lane-head">
-          <span class="lane-k" data-l="en">Live account</span><span class="lane-k" data-l="fr">Compte live</span>
-          <span class="tag live" data-l="en">Since 2025 · live account</span><span class="tag live" data-l="fr">Depuis 2025 · compte live</span>
-        </div>
-        <div class="big" data-l="en">Main income</div><div class="big" data-l="fr">Revenu principal</div>
-        <p data-l="en">I trade my own capital on a live account – it pays the bills and then some.</p>
-        <p data-l="fr">Je trade mon propre capital sur un compte live : il paie les factures, et bien plus.</p>
-        <div class="how-h" data-l="en">How I trade</div><div class="how-h" data-l="fr">Comment je trade</div>
-        <div class="how">
-          <div><em>1</em><b data-l="en">Options positioning</b><b data-l="fr">Positionnement options</b><span data-l="en">Where dealers are long or short gamma: where price is likely to stall or speed up.</span><span data-l="fr">Où les dealers sont long ou short gamma : là où le prix risque de caler ou d'accélérer.</span></div>
-          <div><em>2</em><b data-l="en">Profiles</b><b data-l="fr">Profils</b><span data-l="en">TPO and volume: value areas and levels for the day.</span><span data-l="fr">TPO et volume : zones de valeur et niveaux du jour.</span></div>
-          <div><em>3</em><b>Order flow</b><span data-l="en">Absorption and aggression on the tape decide the entry.</span><span data-l="fr">L'absorption et l'agressivité au tape décident l'entrée.</span></div>
-        </div>
-        <div class="callout"><svg><use href="#sh"/></svg><span data-l="en">Kept apart: no model here, and none of the numbers on this page.</span><span data-l="fr">À part : pas de modèle ici, et aucun des chiffres de cette page.</span></div>
-        <a class="link" href="#trades" style="color:var(--good)"><span data-l="en">See my live trades</span><span data-l="fr">Voir mes trades live</span> →</a>
-      </div>
-
-      <div class="divider" aria-hidden="true"><span data-l="en">Kept apart</span><span data-l="fr">Séparés</span></div>
-
-      <div class="lane prop glass">
-        <div class="lane-head">
-          <span class="lane-k">Prop firms</span>
-          <span class="tag" data-l="en">Oct 2026 · props + the model</span><span class="tag" data-l="fr">Oct. 2026 · props + le modèle</span>
-        </div>
-        <div class="big" data-l="en">The model</div><div class="big" data-l="fr">Le modèle</div>
-        <p data-l="en">Same trader, same strategy. What changed: risk sized to each account's state, every rule priced in.</p>
-        <p data-l="fr">Même trader, même stratégie. Ce qui a changé : un risque adapté à l'état de chaque compte, chaque règle prise en compte.</p>
-        <div class="cmp">
-          <div class="cmp-h" data-l="en">Prop payouts per month</div><div class="cmp-h" data-l="fr">Payouts prop par mois</div>
-          <div class="cmp-row">
-            <div class="cmp-top"><span class="t" data-l="en">Jan – Sep 2026 · props, no model</span><span class="t" data-l="fr">Janv. – sept. 2026 · props sans modèle</span><b id="s-pre-avg">–</b></div>
-            <div class="cmp-bar"><i id="bar-pre"></i></div>
-            <span class="s"><span id="s-pre">–</span> <span id="s-pre-m"></span>. <span data-l="en">Prop firms on the side, a trade here and there. A solid strategy, no plan for the rules.</span><span data-l="fr">Les prop firms à côté, un trade de temps en temps. Une stratégie solide, aucun plan pour les règles.</span></span>
-          </div>
-          <div class="cmp-row on">
-            <div class="cmp-top"><span class="t" data-l="en">Oct 2026 · props + the model</span><span class="t" data-l="fr">Oct. 2026 · props + le modèle</span><b id="s-oct">–</b></div>
-            <div class="cmp-bar"><i id="bar-oct"></i></div>
-            <span class="s" data-l="en">in prop payouts, in one month</span><span class="s" data-l="fr">de payouts prop, en un mois</span>
-          </div>
-        </div>
-        <div class="callout"><svg><use href="#db"/></svg><span data-l="en">Every number on this site comes from here.</span><span data-l="fr">Tous les chiffres de ce site viennent d'ici.</span></div>
-        <a class="link" href="#payouts"><span data-l="en">See the payouts</span><span data-l="fr">Voir les payouts</span> →</a>
-      </div>
-    </div>
-    <p class="story-foot" data-l="en"><b>Every dollar on this page is a prop firm payout, shown as a certificate, not a P&amp;L screenshot.</b> Early results, published as they come: every new payout gets added here.</p>
-    <p class="story-foot" data-l="fr"><b>Chaque dollar de cette page est un payout de prop firm, montré par un certificat, pas une capture de P&amp;L.</b> Premiers résultats, publiés au fil de l'eau : chaque nouveau payout est ajouté ici.</p>
-  </section>
 
   <!-- PAYOUTS -->
   <section id="payouts" class="sec">
     <div class="sh">
       <h2><span data-l="en"><span class="k">Proof</span><span class="sep">·</span>Prop firm payouts</span><span data-l="fr"><span class="k">Preuves</span><span class="sep">·</span>Payouts prop firms</span></h2>
-      <p class="sub" data-l="en">Prop firm payouts only: my live account isn't counted here. Certificates issued by the firms. My first name and the certificate IDs are masked, nothing else is edited.</p>
-      <p class="sub" data-l="fr">Uniquement des payouts de prop firms : mon compte live n'est pas compté ici. Certificats émis par les firmes. Mon prénom et les numéros de certificat sont masqués, rien d'autre n'est retouché.</p>
-    </div>
-    <div class="stats">
-      <div class="stat glass"><b id="spent">~$3,500</b><span data-l="en">spent on evals</span><span data-l="fr">dépensés en évals</span></div>
-      <div class="stat glass hl"><b id="total">–</b><span data-l="en">in prop firm payouts, net of eval fees</span><span data-l="fr">de payouts prop firms, frais d'éval déduits</span></div>
-      <div class="stat glass"><b id="multiple">–</b><span data-l="en">net return on eval spend</span><span data-l="fr">rendement net sur les évals</span></div>
-      <div class="stat glass"><b id="count">–</b><span data-l="en">payouts since</span><span data-l="fr">payouts depuis</span> <span id="since">–</span></div>
+      <p class="sub" data-l="en">Prop firm payouts only, shown as the firms' certificates, not P&amp;L screenshots. My live account is private and isn't counted here. My first name and the certificate IDs are masked, nothing else is edited. Every new payout gets added.</p>
+      <p class="sub" data-l="fr">Uniquement des payouts de prop firms, montrés par les certificats des firmes, pas par des captures de P&amp;L. Mon compte live est privé et n'est pas compté ici. Mon prénom et les numéros de certificat sont masqués, rien d'autre n'est retouché. Chaque nouveau payout est ajouté.</p>
     </div>
     <div class="pay-grid">
       <div class="panel glass">
@@ -650,16 +648,19 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
       </div>
       <div class="panel glass read">
         <div class="octfig">
-          <span class="tag" data-l="en">Oct 2026 · props + the model</span><span class="tag" data-l="fr">Oct. 2026 · props + le modèle</span>
+          <span class="tag" data-l="en">Oct 2026 · prop firms + the model</span><span class="tag" data-l="fr">Oct. 2026 · prop firms + le modèle</span>
           <b id="oct2">–</b>
           <span data-l="en">in prop payouts, in one month</span><span data-l="fr">de payouts prop, en un mois</span>
         </div>
-        <h3><span data-l="en">How to read it</span><span data-l="fr">Comment le lire</span></h3>
-        <p id="netline" class="big"></p>
+        <p class="big" data-l="en">Same trader, same strategy. What changed in October: risk sized to each account's state, every rule priced in.</p>
+        <p class="big" data-l="fr">Même trader, même stratégie. Ce qui a changé en octobre : un risque adapté à l'état de chaque compte, chaque règle prise en compte.</p>
+        <p data-l="en">One month with the model so far: an early result, not a proven effect.</p>
+        <p data-l="fr">Un seul mois avec le modèle pour l'instant : un premier résultat, pas un effet prouvé.</p>
         
         
       </div>
     </div>
+    <p class="note" id="netline" style="margin:14px 0 0"></p>
     <div class="certs-h">
       <h3><span data-l="en">Certificates</span><span data-l="fr">Certificats</span></h3>
       <span class="note" data-l="en">Largest first. Click to enlarge.</span><span class="note" data-l="fr">Les plus gros d'abord. Clique pour agrandir.</span>
@@ -693,7 +694,7 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
           <div class="step"><span class="n">1</span><span class="lab" data-l="en">Rules</span><span class="lab" data-l="fr">Règles</span><h4 data-l="en">Every rule, coded</h4><h4 data-l="fr">Chaque règle, codée</h4><p data-l="en">Floors, trailing, locks, consistency, payout rules.</p><p data-l="fr">Plancher, trailing, verrou, consistency, règles de payout.</p></div>
           <div class="step"><span class="n">2</span><span class="lab" data-l="en">State</span><span class="lab" data-l="fr">État</span><h4 data-l="en">Where the account stands</h4><h4 data-l="fr">Où en est le compte</h4><p data-l="en">Every account has a state. The risk follows it.</p><p data-l="fr">Chaque compte a un état. Le risque le suit.</p></div>
           <div class="step"><span class="n">3</span><span class="lab" data-l="en">Risk</span><span class="lab" data-l="fr">Risque</span><h4 data-l="en">The right size, per state</h4><h4 data-l="fr">La bonne taille, selon l'état</h4><p data-l="en">Computed, then stress-tested.</p><p data-l="fr">Calculée, puis mise à l'épreuve.</p></div>
-          <div class="step hot"><span class="n">4</span><span class="lab">ROI · EV</span><h4 data-l="en">The whole chain</h4><h4 data-l="fr">Toute la chaîne</h4><p data-l="en">Every fee counted. Plans ranked by ROI and expected $ per day.</p><p data-l="fr">Tous les frais comptés. Plans classés par ROI et gain espéré par jour.</p></div>
+          <div class="step"><span class="n">4</span><span class="lab">ROI · EV</span><h4 data-l="en">The whole chain</h4><h4 data-l="fr">Toute la chaîne</h4><p data-l="en">Every fee counted. Plans ranked by ROI and expected $ per day.</p><p data-l="fr">Tous les frais comptés. Plans classés par ROI et gain espéré par jour.</p></div>
         </div>
       </div>
 
@@ -732,45 +733,35 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
         <p class="note" style="margin-top:auto" data-l="fr">Un objectif différent à chaque étape, un risque optimal différent.</p>
       </div>
 
-      <div class="tile glass s4 bignums">
-        <div><b>28</b><span data-l="en">futures prop firms, rule by rule</span><span data-l="fr">prop firms futures, règle par règle</span></div>
-        <div><b>81</b><span data-l="en">account plans + payout variants</span><span data-l="fr">plans de compte + variantes de payout</span></div>
-        <div><b><span data-l="en">1,140</span><span data-l="fr">1 140</span></b><span data-l="en">automated tests on the model</span><span data-l="fr">tests automatiques du modèle</span></div>
-      </div>
 
-      <div class="cards s8">
-        <div class="card glass"><span class="tag">EDGE = 0</span><h4 data-l="en">Zero edge first</h4><h4 data-l="fr">Edge nul d'abord</h4><p data-l="en">Start from a coin-flip trader. Edge goes on top, never assumed.</p><p data-l="fr">On part d'un trader pile ou face. L'edge s'ajoute ensuite, jamais supposé.</p></div>
-        <div class="card glass"><span class="tag" data-l="en">CHECKS</span><span class="tag" data-l="fr">CONTRÔLES</span><h4 data-l="en">Checked, not fitted</h4><h4 data-l="fr">Vérifié, pas ajusté</h4><p data-l="en">Two independent methods that have to agree.</p><p data-l="fr">Deux méthodes indépendantes qui doivent concorder.</p></div>
-        <div class="card glass"><span class="tag" data-l="en">RULES</span><span class="tag" data-l="fr">RÈGLES</span><h4 data-l="en">Pessimistic by default</h4><h4 data-l="fr">Pessimiste par défaut</h4><p data-l="en">Every rule read twice. When it's unclear, the harshest reading.</p><p data-l="fr">Chaque règle relevée deux fois. Si elle est floue, la lecture la plus dure.</p></div>
-        <div class="card glass"><span class="tag dim" data-l="en">LIMITS</span><span class="tag dim" data-l="fr">LIMITES</span><h4 data-l="en">Not in the model</h4><h4 data-l="fr">Hors du modèle</h4><p data-l="en">A firm refusing to pay or going under. Taxes.</p><p data-l="fr">Une firme qui refuse de payer ou qui ferme. Les impôts.</p></div>
+      <div class="card glass princ s12">
+        <span class="tag" data-l="en">Principles</span><span class="tag" data-l="fr">Principes</span>
+        <div class="pr">
+          <p><b data-l="en">Zero edge first.</b><b data-l="fr">Edge nul d'abord.</b> <span data-l="en">Start from a coin-flip trader. Edge goes on top, never assumed.</span><span data-l="fr">On part d'un trader pile ou face. L'edge s'ajoute ensuite, jamais supposé.</span></p>
+          <p><b data-l="en">Checked, not fitted.</b><b data-l="fr">Vérifié, pas ajusté.</b> <span data-l="en">Two independent methods that have to agree.</span><span data-l="fr">Deux méthodes indépendantes qui doivent concorder.</span></p>
+          <p><b data-l="en">Pessimistic by default.</b><b data-l="fr">Pessimiste par défaut.</b> <span data-l="en">Every rule read twice. When it's unclear, the harshest reading.</span><span data-l="fr">Chaque règle relevée deux fois. Si elle est floue, la lecture la plus dure.</span></p>
+          <p><b data-l="en">Not in the model.</b><b data-l="fr">Hors du modèle.</b> <span data-l="en">A firm refusing to pay or going under. Taxes.</span><span data-l="fr">Une firme qui refuse de payer ou qui ferme. Les impôts.</span></p>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- WHY ME -->
-  <section id="why" class="sec">
-    <div class="sh">
-      <h2><span data-l="en"><span class="k">Why me</span><span class="sep">·</span>What sets this apart</span><span data-l="fr"><span class="k">Pourquoi moi</span><span class="sep">·</span>Ce qui me distingue</span></h2>
-    </div>
-    <div class="why">
-      <div class="wt glass"><span class="i">01</span><h4 data-l="en">Others teach you to trade. I make the rules work for you.</h4><h4 data-l="fr">Le trading, d'autres te l'apprennent. Moi, je fais en sorte que les règles jouent pour toi.</h4><p data-l="en">No setups for sale: I compute the risk that fits the way you already trade.</p><p data-l="fr">Je ne vends pas de setup : je calcule le risque qui colle à ta façon de trader.</p></div>
-      <div class="wt glass"><span class="i">02</span><h4 data-l="en">Proof, not promises</h4><h4 data-l="fr">Des preuves, pas des promesses</h4><p data-l="en"><span class="n-count">–</span> payout certificates, all on this page, and a model you can test for free.</p><p data-l="fr"><span class="n-count">–</span> certificats de payout, tous sur cette page, et un modèle que tu peux tester gratuitement.</p></div>
-      <div class="wt glass"><span class="i">03</span><h4 data-l="en">The background for it</h4><h4 data-l="fr">La formation qui va avec</h4><p data-l="en">Master's in finance and maths, banking experience, 6+ years of trading.</p><p data-l="fr">Master en finance et maths, expérience en banque, plus de 6 ans de trading.</p></div>
-      <div class="wt glass no"><span class="i">04</span><h4 data-l="en">What I don't do</h4><h4 data-l="fr">Ce que je ne fais pas</h4><p data-l="en">No signals, no trade copying, no promised gains.</p><p data-l="fr">Pas de signaux, pas de copie de trades, pas de gains promis.</p></div>
-    </div>
-  </section>
 
   <!-- COACHING -->
   <section id="work" class="sec">
     <div class="sh">
       <h2><span data-l="en"><span class="k">Coaching</span><span class="sep">·</span>Work with me 1:1</span><span data-l="fr"><span class="k">Coaching</span><span class="sep">·</span>Travailler avec moi en 1:1</span></h2>
+      <p class="sub" data-l="en">For traders who pass evals but lose funded accounts before getting paid, or who want to run several accounts.</p>
+      <p class="sub" data-l="fr">Pour les traders qui passent des évals mais perdent leurs comptes financés avant d'être payés, ou qui veulent mener plusieurs comptes.</p>
+    </div>
+    <div class="why three">
+      <div class="wt glass"><span class="i">01</span><h4 data-l="en">Others teach you to trade. I make the rules work for you.</h4><h4 data-l="fr">Le trading, d'autres te l'apprennent. Moi, je fais en sorte que les règles jouent pour toi.</h4><p data-l="en">No setups for sale: I compute the risk that fits the way you already trade.</p><p data-l="fr">Je ne vends pas de setup : je calcule le risque qui colle à ta façon de trader.</p></div>
+      <div class="wt glass no"><span class="i">02</span><h4 data-l="en">What I don't do</h4><h4 data-l="fr">Ce que je ne fais pas</h4><p data-l="en">No signals, no trade copying, no promised gains.</p><p data-l="fr">Pas de signaux, pas de copie de trades, pas de gains promis.</p></div>
     </div>
     <div class="offer">
       <div class="offer-l">
-        <p class="lead" data-l="en">I take a few traders. You get the model I trade, applied to your trading, with the numbers behind every recommendation.</p>
-        <p class="lead" data-l="fr">J'accompagne quelques traders. Tu as le modèle que je trade, appliqué à ton trading, avec les chiffres derrière chaque recommandation.</p>
-        <p class="who" data-l="en">For traders who pass evals but lose funded accounts before getting paid, or who want to run several accounts.</p>
-        <p class="who" data-l="fr">Pour les traders qui passent des évals mais perdent leurs comptes financés avant d'être payés, ou qui veulent mener plusieurs comptes.</p>
+        <p class="lead" data-l="en">I take a few traders. You get the model I trade with, applied to your trading, with the numbers behind every recommendation.</p>
+        <p class="lead" data-l="fr">J'accompagne quelques traders. Tu as le modèle avec lequel je trade, appliqué à ton trading, avec les chiffres derrière chaque recommandation.</p>
         <div class="ol-h" data-l="en">What we work on</div><div class="ol-h" data-l="fr">Ce qu'on travaille</div>
         <div class="items">
           <div class="item"><svg><use href="#ck"/></svg><b data-l="en">Which firm, which account</b><b data-l="fr">Quelle firme, quel compte</b><span data-l="en">The plans that fit how you trade, ranked by ROI and expected $ per day.</span><span data-l="fr">Les plans qui collent à ta façon de trader, classés par ROI et gain espéré par jour.</span></div>
@@ -779,44 +770,68 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
           <div class="item"><svg><use href="#ck"/></svg><b data-l="en">Several accounts at once</b><b data-l="fr">Plusieurs comptes en parallèle</b><span data-l="en">How many at once, the bankroll it takes, your real risk of ruin.</span><span data-l="fr">Combien en parallèle, la bankroll nécessaire, ton vrai risque de ruine.</span></div>
           <div class="item wide"><svg><use href="#ck"/></svg><b data-l="en">CFDs or sim → futures props</b><b data-l="fr">CFD ou simu → props futures</b><span data-l="en">What changes, and where people lose their first evals.</span><span data-l="fr">Ce qui change, et là où on perd ses premières évals.</span></div>
         </div>
-      </div>
-      <div class="offer-r">
-        <h3><span data-l="en">How it works</span><span data-l="fr">Comment ça se passe</span></h3>
-        <div class="hiw">
+        <div class="ol-h" data-l="en">How it works</div><div class="ol-h" data-l="fr">Comment ça se passe</div>
+        <div class="hiw row">
           <div><em>1</em><b data-l="en">DM</b><b data-l="fr">Message</b><span data-l="en">Tell me on X where you're at: firms, accounts, results so far.</span><span data-l="fr">Dis-moi sur X où tu en es : firmes, comptes, résultats jusqu'ici.</span></div>
           <div><em>2</em><b data-l="en">Short call</b><b data-l="fr">Court appel</b><span data-l="en">We see whether it's a fit. No commitment.</span><span data-l="fr">On voit si ça colle. Sans engagement.</span></div>
           <div><em>3</em><b data-l="en">Your plan</b><b data-l="fr">Ton plan</b><span data-l="en">A written plan built on your numbers, then calls over a few weeks to put it in place.</span><span data-l="fr">Un plan écrit sur tes chiffres, puis des appels sur quelques semaines pour le mettre en place.</span></div>
         </div>
+      </div>
+      <div class="offer-r">
+        <div class="ol-h" data-l="en">What you get</div><div class="ol-h" data-l="fr">Ce que tu reçois</div>
+        <div class="plan" aria-label="Sample plan page, numbers blurred">
+          <div class="plan-h">
+            <div class="plan-t"><b data-l="en">Payout plan</b><b data-l="fr">Plan de payout</b><small data-l="en">2 accounts · built on your stats</small><small data-l="fr">2 comptes · bâti sur tes stats</small></div>
+            <span class="tag dim" data-l="en">Sample · numbers blurred</span><span class="tag dim" data-l="fr">Exemple · chiffres floutés</span>
+          </div>
+          <div class="plan-body" aria-hidden="true">
+            <div class="pl-sec">
+              <div class="pl-sh"><span data-l="en">1 · Accounts, ranked</span><span data-l="fr">1 · Comptes, classés</span><i data-l="en">ROI · $ / day</i><i data-l="fr">ROI · $ / jour</i></div>
+              <div class="pl-acc">
+                <div><em>1</em><div><b data-l="en">Account A · 50K</b><b data-l="fr">Compte A · 50K</b><i class="bar" style="--w:78%"></i></div><b class="v">+xxx%</b><b class="v">$xx</b></div>
+                <div><em>2</em><div><b data-l="en">Account B · 25K</b><b data-l="fr">Compte B · 25K</b><i class="bar" style="--w:46%"></i></div><b class="v">+xxx%</b><b class="v">$xx</b></div>
+              </div>
+            </div>
+            <div class="pl-sec">
+              <div class="pl-sh"><span data-l="en">2 · Risk per trade, by state</span><span data-l="fr">2 · Risque par trade, par état</span></div>
+              <div class="pl-stages">
+                <div><span data-l="en">Eval</span><span data-l="fr">Éval</span><b class="v">$xxx</b><small>RR <b class="v">x</b></small></div>
+                <div><span data-l="en">Funded</span><span data-l="fr">Financé</span><b class="v">$xxx</b><small>RR <b class="v">x</b></small></div>
+                <div class="on"><span data-l="en">After 1st payout</span><span data-l="fr">Après le 1er payout</span><b class="v">$xxx</b><small>RR <b class="v">x</b></small></div>
+              </div>
+            </div>
+            <div class="pl-sec">
+              <div class="pl-sh"><span>3 · Payouts</span></div>
+              <p class="pl-line" data-l="en">Withdraw <b class="v">$x,xxx</b> once the balance reaches <b class="v">$x,xxx</b>, then every <b class="v">$xxx</b>.</p>
+              <p class="pl-line" data-l="fr">Retirer <b class="v">x xxx $</b> dès que le solde atteint <b class="v">x xxx $</b>, puis tous les <b class="v">xxx $</b>.</p>
+              <p class="pl-line" data-l="en">Stop for the day after <b class="v">x</b> losses or <b class="v">−$xxx</b>.</p>
+              <p class="pl-line" data-l="fr">Journée terminée après <b class="v">x</b> pertes ou <b class="v">−xxx $</b>.</p>
+            </div>
+            <div class="pl-sec">
+              <div class="pl-sh"><span data-l="en">4 · Running several accounts</span><span data-l="fr">4 · Mener plusieurs comptes</span></div>
+              <div class="pl-rows">
+                <div><span data-l="en">Bankroll these 2 accounts need</span><span data-l="fr">Bankroll pour ces 2 comptes</span><b class="v">$x,xxx</b></div>
+                <div><span data-l="en">Risk of ruin over 12 months</span><span data-l="fr">Risque de ruine sur 12 mois</span><b class="v">xx%</b></div>
+                <div><span data-l="en">Add a 3rd account once the bankroll reaches</span><span data-l="fr">Ajouter un 3e compte dès que la bankroll atteint</span><b class="v">$x,xxx</b></div>
+              </div>
+            </div>
+            <div class="pl-kpi">
+              <div><b class="v">$xx</b><span data-l="en">expected per trading day, net</span><span data-l="fr">espérance par jour de trading, net</span></div>
+              <div><b class="v">xx%</b><span data-l="en">odds of a payout within 60 days</span><span data-l="fr">chances d'un payout sous 60 jours</span></div>
+              <div><b class="v">+xxx%</b><span data-l="en">expected return on eval fees</span><span data-l="fr">rendement espéré sur les frais d'éval</span></div>
+            </div>
+            <div class="plan-foot"><span data-l="en">Page 2 / 5 · Risk &amp; payouts</span><span data-l="fr">Page 2 / 5 · Risque &amp; payouts</span><span data-l="en">Updated after each payout</span><span data-l="fr">Mis à jour après chaque payout</span></div>
+          </div>
+          <p class="plan-f" data-l="en">One page of a plan, with made-up numbers. Yours is computed on your accounts and your stats, then adjusted after each payout.</p>
+          <p class="plan-f" data-l="fr">Une page d'un plan, avec des chiffres inventés. Le tien est calculé sur tes comptes et tes stats, puis ajusté après chaque payout.</p>
+        </div>
         <a class="btn primary big" href="https://x.com/messages/compose?recipient_id=1577750859391328256" data-goatcounter-click="dm-offer" target="_blank" rel="noopener"><span data-l="en">DM me on X →</span><span data-l="fr">M'écrire sur X →</span></a>
-        <p class="spots" data-l="en"><b>Limited spots.</b> DM me on X and tell me where you're at.</p>
-        <p class="spots" data-l="fr"><b>Places limitées.</b> Écris-moi sur X et dis-moi où tu en es.</p>
       </div>
     </div>
     <p class="note" style="margin-top:14px" data-l="en">Education on prop firm rules and risk math. Not financial advice, no signals, no trade copying.</p>
     <p class="note" style="margin-top:14px" data-l="fr">De la formation sur les règles des prop firms et les maths du risque. Pas de conseil financier, pas de signaux, pas de copie de trades.</p>
   </section>
 
-  <!-- TRADES -->
-  <section id="trades" class="sec">
-    <div class="trades-h">
-      <div class="sh">
-        <h2><span data-l="en"><span class="k">Live account</span><span class="sep">·</span>My trades</span><span data-l="fr"><span class="k">Compte live</span><span class="sep">·</span>Mes trades</span></h2>
-        <p class="lead2"><span data-l="en">How I read NQ on my live account, a different game than prop firms.</span><span data-l="fr">Comment je lis le NQ sur mon compte live, un autre jeu que les prop firms.</span></p>
-        <p class="sub" data-l="en">Posted on X as they happened, mistakes included.</p>
-        <p class="sub" data-l="fr">Postés sur X en direct, erreurs comprises.</p>
-      </div>
-      <div class="car-nav">
-        <button class="prev" id="car-prev" type="button" aria-label="Previous"><svg><use href="#ar"/></svg></button>
-        <button class="next" id="car-next" type="button" aria-label="Next"><svg><use href="#ar"/></svg></button>
-      </div>
-    </div>
-    <div class="track" id="track">
-      <div class="trade"><img src="trades/2026-11-02.jpg" width="1400" height="790" loading="lazy" alt="NQ TPO profiles by session with the composite profile, Nov 2, 2026"><div class="meta"><b data-l="en">Nov 2 · TPO profiles</b><b data-l="fr">2 nov. · profils TPO</b><p data-l="en">One profile per session and the multi-day composite on the right. Value areas and POCs give me the map before the open.</p><p data-l="fr">Un profil par séance et le composite multi-jours à droite. Zones de valeur et POC me donnent la carte avant l'ouverture.</p></div></div>
-      <div class="trade"><img src="trades/2026-10-30.jpg" width="1400" height="711" loading="lazy" alt="NQ 1-minute chart with large orders, Oct 30, 2026"><div class="meta"><b data-l="en">Oct 30 · what I look at</b><b data-l="fr">30 oct. · ce que je regarde</b><p data-l="en">1-minute NQ with the large orders printed on the tape. Options positioning gives me the levels, this decides the entry.</p><p data-l="fr">NQ en 1 minute avec les gros ordres imprimés au tape. Le positionnement options donne les niveaux, ceci décide l'entrée.</p></div></div>
-      <a class="trade" href="https://x.com/Sarkel20/status/2106088958622835104" target="_blank" rel="noopener"><img src="trades/2026-10-02.jpg" width="1400" height="927" loading="lazy" alt="NQ short, Oct 2, 2026"><div class="meta"><b data-l="en">Oct 2 · short, +53.75 pts</b><b data-l="fr">2 oct. · short, +53,75 pts</b><p data-l="en">Downtrend into VWAP and the previous week's high, absorption on the retest. Exited at the low-volume shelf, too early: trailing is still my weak spot.</p><p data-l="fr">Tendance baissière dans le VWAP et le plus haut de la semaine précédente, absorption sur le retest. Sortie sur le palier de faible volume, trop tôt : le trailing reste mon point faible.</p><span class="x" data-l="en">View the post on X ↗</span><span class="x" data-l="fr">Voir le post sur X ↗</span></div></a>
-      <a class="trade" href="https://x.com/Sarkel20/status/2105604567022915858" target="_blank" rel="noopener"><img src="trades/2026-10-01.jpg" width="1400" height="673" loading="lazy" alt="NQ short, Oct 1, 2026"><div class="meta"><b data-l="en">Oct 1 · short, zone to zone</b><b data-l="fr">1er oct. · short, de zone à zone</b><p data-l="en">Simple zone to zone with order flow on top. Exited too early on the dump: holding winners is what I'm working on.</p><p data-l="fr">Un simple zone à zone, avec l'order flow en confirmation. Sorti trop tôt sur la chute : laisser courir les gains, c'est ce que je travaille.</p><span class="x" data-l="en">View the post on X ↗</span><span class="x" data-l="fr">Voir le post sur X ↗</span></div></a>
-    </div>
-  </section>
 
   <!-- ABOUT -->
   <section id="about" class="sec">
@@ -837,6 +852,28 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
       <div class="tl"><b data-l="en">During my studies</b><b data-l="fr">Pendant mes études</b><span data-l="en">6 years of trading on the side, while studying finance and maths.</span><span data-l="fr">6 ans de trading à côté, en étudiant la finance et les maths.</span></div>
       <div class="tl"><b data-l="en">2025 · Full-time</b><b data-l="fr">2025 · Plein temps</b><span data-l="en">Right out of school, full-time on NQ futures, made possible by 6+ years of trading and growing my live account.</span><span data-l="fr">Dès la fin de mes études, à plein temps sur le NQ futures, rendu possible par plus de 6 ans à trader et faire grandir mon compte live.</span></div>
       <div class="tl now"><b data-l="en">Oct 2026 · The model</b><b data-l="fr">Oct. 2026 · Le modèle</b><span data-l="en">Before: prop firms as a side income. Now: traded optimally with the model.</span><span data-l="fr">Avant : les prop firms en revenu d'appoint. Désormais : tradées de façon optimale avec le modèle.</span></div>
+    </div>
+  </section>
+
+  <!-- TRADES -->
+  <section id="trades" class="sec">
+    <div class="trades-h">
+      <div class="sh">
+        <h2><span data-l="en"><span class="k">My trading</span><span class="sep">·</span>How I read NQ</span><span data-l="fr"><span class="k">Mon trading</span><span class="sep">·</span>Comment je lis le NQ</span></h2>
+        <p class="lead2"><span data-l="en">Options positioning for the levels, profiles for the map, order flow for the entry.</span><span data-l="fr">Le positionnement options pour les niveaux, les profils pour la carte, l'order flow pour l'entrée.</span></p>
+        <p class="sub" data-l="en">Posted on X as they happened, mistakes included.</p>
+        <p class="sub" data-l="fr">Postés sur X en direct, erreurs comprises.</p>
+      </div>
+      <div class="car-nav">
+        <button class="prev" id="car-prev" type="button" aria-label="Previous"><svg><use href="#ar"/></svg></button>
+        <button class="next" id="car-next" type="button" aria-label="Next"><svg><use href="#ar"/></svg></button>
+      </div>
+    </div>
+    <div class="track" id="track">
+      <div class="trade"><img src="trades/2026-11-02.jpg" width="1400" height="790" loading="lazy" alt="NQ TPO profiles by session with the composite profile, Nov 2, 2026"><div class="meta"><b data-l="en">Nov 2 · TPO profiles</b><b data-l="fr">2 nov. · profils TPO</b><p data-l="en">One profile per session and the multi-day composite on the right. Value areas and POCs give me the map before the open.</p><p data-l="fr">Un profil par séance et le composite multi-jours à droite. Zones de valeur et POC me donnent la carte avant l'ouverture.</p></div></div>
+      <div class="trade"><img src="trades/2026-10-30.jpg" width="1400" height="711" loading="lazy" alt="NQ 1-minute chart with large orders, Oct 30, 2026"><div class="meta"><b data-l="en">Oct 30 · what I look at</b><b data-l="fr">30 oct. · ce que je regarde</b><p data-l="en">1-minute NQ with the large orders printed on the tape. Options positioning gives me the levels, this decides the entry.</p><p data-l="fr">NQ en 1 minute avec les gros ordres imprimés au tape. Le positionnement options donne les niveaux, ceci décide l'entrée.</p></div></div>
+      <a class="trade" href="https://x.com/Sarkel20/status/2106088958622835104" target="_blank" rel="noopener"><img src="trades/2026-10-02.jpg" width="1400" height="927" loading="lazy" alt="NQ short, Oct 2, 2026"><div class="meta"><b data-l="en">Oct 2 · short, +53.75 pts</b><b data-l="fr">2 oct. · short, +53,75 pts</b><p data-l="en">Downtrend into VWAP and the previous week's high, absorption on the retest. Exited at the low-volume shelf, too early: trailing is still my weak spot.</p><p data-l="fr">Tendance baissière dans le VWAP et le plus haut de la semaine précédente, absorption sur le retest. Sortie sur le palier de faible volume, trop tôt : le trailing reste mon point faible.</p><span class="x" data-l="en">View the post on X ↗</span><span class="x" data-l="fr">Voir le post sur X ↗</span></div></a>
+      <a class="trade" href="https://x.com/Sarkel20/status/2105604567022915858" target="_blank" rel="noopener"><img src="trades/2026-10-01.jpg" width="1400" height="673" loading="lazy" alt="NQ short, Oct 1, 2026"><div class="meta"><b data-l="en">Oct 1 · short, zone to zone</b><b data-l="fr">1er oct. · short, de zone à zone</b><p data-l="en">Simple zone to zone with order flow on top. Exited too early on the dump: holding winners is what I'm working on.</p><p data-l="fr">Un simple zone à zone, avec l'order flow en confirmation. Sorti trop tôt sur la chute : laisser courir les gains, c'est ce que je travaille.</p><span class="x" data-l="en">View the post on X ↗</span><span class="x" data-l="fr">Voir le post sur X ↗</span></div></a>
     </div>
   </section>
 
@@ -1232,7 +1269,7 @@ var PAYOUTS = [
  }
 ];
 // Opened as the raw source (no payouts injected): say so instead of showing an empty page.
-if (!PAYOUTS.length) document.addEventListener('DOMContentLoaded', function () { document.body.insertAdjacentHTML('afterbegin', '<div style="position:sticky;top:0;z-index:99;background:#ffd166;color:#111;padding:14px 18px;font:600 16px system-ui">Fichier source de la maquette : ouvre plutôt le raccourci « Maquette redesign » dans le dossier « Payout Solver » du Bureau.</div>'); });
+if (!PAYOUTS.length) document.addEventListener('DOMContentLoaded', function () { document.body.insertAdjacentHTML('afterbegin', '<div style="position:sticky;top:0;z-index:99;background:#ffd166;color:#111;padding:14px 18px;font:600 16px system-ui">Fichier source de la maquette : ouvre plutôt le raccourci « Payout Solver (version locale) » dans le dossier « Payout Solver » du Bureau.</div>'); });
 // Testimonials: add {en: '...', fr: '...', who: '...'} entries; the section and its menu link show up once there is one.
 var TESTIMONIALS = [];
 (function () {
@@ -1257,13 +1294,15 @@ var TESTIMONIALS = [];
   // Months from the first payout month to September 2026, inclusive (the "no model" period).
   var preMonths = first ? (2026 - +first.slice(0, 4)) * 12 + 9 - +first.slice(5, 7) + 1 : 1;
   var SPENT = 3500, MODEL = '2026-10';
+  // Certificates paid the same day for the same amount come from separate accounts.
+  var same = {}; list.forEach(function (p) { var k = p.date + '|' + p.amount; same[k] = (same[k] || 0) + 1; });
   var big = list.slice().sort(function (a, b) { return b.amount - a.amount || (a.date < b.date ? 1 : -1); });
   // Every month from the first payout to the latest one, empty months included.
   var mkeys = [], lastM = Object.keys(months).sort().pop();
   if (first) { var y = +first.slice(0, 4), mo = +first.slice(5, 7); for (var g = 0; g < 240; g++) { var key = y + '-' + (mo < 10 ? '0' : '') + mo; mkeys.push(key); if (key >= lastM) break; if (++mo > 12) { mo = 1; y++; } } }
   var maxM = Math.max.apply(null, mkeys.map(function (k) { return months[k] || 0; }).concat([1]));
   var grid = $('proofs'), more = $('more'), open = false, counted = false;
-  var SHOWN = window.matchMedia('(min-width: 900px)').matches ? 8 : 4;
+  var SHOWN = 4; // one row on desktop; the rest behind "Show all"
 
   // Hero fan: the three largest certificates.
   $('fan').innerHTML = big.slice(0, 3).map(function (p) { return '<img src="' + p.file + '" alt="" width="' + p.w + '" height="' + p.h + '">'; }).join('');
@@ -1278,24 +1317,20 @@ var TESTIMONIALS = [];
     // Hero sparkline (same months as the payouts chart).
     $('spark').innerHTML = mkeys.map(function (k) { var v = months[k] || 0; return '<i class="' + (k >= MODEL ? 'on' : v ? '' : 'zero') + '" style="height:' + Math.max(6, 100 * v / maxM).toFixed(1) + '%"></i>'; }).join('');
     $('spark-l').innerHTML = mkeys.length ? '<span>' + esc(day(mkeys[0] + '-15', { month: 'short', year: 'numeric' })) + '</span><span>' + esc(day(lastM + '-15', { month: 'short', year: 'numeric' })) + '</span>' : '';
-    $('latest').innerHTML = list.slice(0, 3).map(function (p) {
-      return '<button class="pc-row" type="button" data-i="' + big.indexOf(p) + '"><img src="' + p.file + '" alt="" loading="lazy"><b>' + fmt(p.amount) + '</b><span>' + esc(day(p.date)) + '</span></button>';
-    }).join('');
-    // Two lanes: monthly rate before the model vs the first month with it.
-    var avg = pre / preMonths;
-    set('s-pre', fmt(pre)); set('s-pre-m', T('in ' + preMonths + ' months', 'en ' + preMonths + ' mois'));
-    $('s-pre-avg').innerHTML = '~' + esc(fmt(avg)) + '<small>' + T('/ month', '/ mois') + '</small>';
-    set('s-oct', fmt(oct)); set('oct2', fmt(oct));
-    var mx = Math.max(avg, oct, 1);
-    $('bar-pre').style.width = (100 * avg / mx).toFixed(1) + '%'; $('bar-oct').style.width = (100 * oct / mx).toFixed(1) + '%';
+    // Previous calendar month (stable within a month, computed in the visitor's browser) and the latest certificate.
+    var now = new Date(), pm = new Date(now.getFullYear(), now.getMonth() - 1, 15), prevM = pm.getFullYear() + '-' + (pm.getMonth() < 9 ? '0' : '') + (pm.getMonth() + 1);
+    var prevN = list.filter(function (p) { return p.date.slice(0, 7) === prevM; }).length;
+    set('h-mtot', months[prevM] ? fmt(months[prevM]) : '–');
+    set('h-mlab', day(prevM + '-15', { month: 'long', year: 'numeric' }) + ' · ' + prevN + ' payout' + (prevN === 1 ? '' : 's'));
+    set('h-last', list.length ? T('Latest: ', 'Dernier : ') + fmt(list[0].amount) + ', ' + day(list[0].date) : '–');
+    set('oct2', fmt(oct));
     // Payout stats.
-    set('spent', '~' + fmt(SPENT)); set('total', fmt(total)); set('multiple', mult); set('count', list.length);
-    set('since', first ? day(first, { month: 'short', year: 'numeric' }) : '–');
-    var net = Math.round((total - purdia * 0.1) / SPENT * 100);
-    // No firm names on the page; one line on eval fees and one on the 10% split, so the +366% adds up.
+    set('spent', '~' + fmt(SPENT));
+    var kept = total - purdia * 0.1, net = Math.round(kept / SPENT * 100);
+    // No firm names on the page. The totals are certificate amounts; one firm keeps a 10% split, given here so nothing reads as hidden.
     set('netline', T(
-      fmt(total) + ' is what I kept after earning back every eval fee: +' + net + '% net of a 10% profit split on some certificates.',
-      fmt(total) + ', c\'est ce que j\'ai gardé une fois chaque frais d\'éval remboursé : +' + net + ' % net d\'un partage de 10 % sur certains certificats.'));
+      'How to read the totals: certificate amounts, after eval fees. One firm keeps a 10% profit split: after it, about ' + fmtK(kept) + ', +' + net + '% on eval spend.',
+      'Comment lire les totaux : montants des certificats, après frais d\'éval. Une firme garde 10 % des gains : après ce partage, environ ' + fmtK(kept) + ', +' + net + ' % sur les évals.'));
     // Monthly bars, every month since the first payout; the model months are highlighted.
     var narrow = window.matchMedia('(max-width: 600px)').matches;
     $('mchart').innerHTML = mkeys.map(function (k) {
@@ -1307,7 +1342,7 @@ var TESTIMONIALS = [];
     // Certificates: largest first (newest first on ties); the link still opens the file without JS.
     grid.innerHTML = (open ? big : big.slice(0, SHOWN)).map(function (p, i) {
       var d = day(p.date);
-      return '<a class="proof" href="' + p.file + '" target="_blank" rel="noopener" data-i="' + i + '"><img src="' + p.file + '" alt="Payout certificate, ' + fmt(p.amount) + ', ' + d + '" width="' + p.w + '" height="' + p.h + '" loading="lazy"><div class="meta"><b>' + fmt(p.amount) + '</b><span>' + d + '</span></div></a>';
+      return '<a class="proof" href="' + p.file + '" target="_blank" rel="noopener" data-i="' + i + '"><img src="' + p.file + '" alt="Payout certificate, ' + fmt(p.amount) + ', ' + d + '" width="' + p.w + '" height="' + p.h + '" loading="lazy"><div class="meta"><b>' + fmt(p.amount) + '</b><span>' + d + '</span>' + (same[p.date + '|' + p.amount] > 1 ? '<small class="acc">' + T(same[p.date + '|' + p.amount] + ' accounts, same day', same[p.date + '|' + p.amount] + ' comptes, même jour') + '</small>' : '') + '</div></a>';
     }).join('');
     more.textContent = open ? T('Show fewer', 'Afficher moins') : T('Show all ' + list.length + ' certificates', 'Afficher les ' + list.length + ' certificats');
     if (TESTIMONIALS.length) {
