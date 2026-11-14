@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Payout Solver · by Sarkel</title>
-<meta name="description" content="NQ futures trader. I model prop firm rules: odds of passing, trailing floors, payout policies. 79 payout certificates, free tools, 1:1 by DM.">
+<meta name="description" content="NQ futures trader. I model prop firm rules: odds of passing, trailing floors, payout policies. 77 payout certificates, free tools, 1:1 by DM.">
 <meta property="og:title" content="Payout Solver · by Sarkel">
 <meta property="og:description" content="The math on prop firm rules, real payouts, and a free eval odds calculator.">
 <meta property="og:type" content="website">
@@ -1404,66 +1404,34 @@ var PAYOUTS = [
   "h": 1200
  },
  {
-  "date": "2026-11-06",
-  "amount": 92.85,
+  "date": "2026-11-11",
+  "amount": 92.86,
   "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-92_85.jpg",
+  "file": "proofs/vest-2026-11-11-92_86.jpg",
   "w": 1200,
   "h": 1200
  },
  {
-  "date": "2026-11-06",
-  "amount": 93.2,
+  "date": "2026-11-11",
+  "amount": 92.86,
   "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-93_20.jpg",
+  "file": "proofs/vest-2026-11-11-92_86b.jpg",
   "w": 1200,
   "h": 1200
  },
  {
-  "date": "2026-11-06",
-  "amount": 92.82,
+  "date": "2026-11-11",
+  "amount": 227.49,
   "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-92_82.jpg",
+  "file": "proofs/vest-2026-11-11-227_49.jpg",
   "w": 1200,
   "h": 1200
  },
  {
-  "date": "2026-11-06",
-  "amount": 92.85,
+  "date": "2026-11-11",
+  "amount": 278.87,
   "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-92_85b.jpg",
-  "w": 1200,
-  "h": 1200
- },
- {
-  "date": "2026-11-06",
-  "amount": 42.02,
-  "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-42_02.jpg",
-  "w": 1200,
-  "h": 1200
- },
- {
-  "date": "2026-11-06",
-  "amount": 92.37,
-  "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-92_37.jpg",
-  "w": 1200,
-  "h": 1200
- },
- {
-  "date": "2026-11-06",
-  "amount": 93.1,
-  "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-93_10.jpg",
-  "w": 1200,
-  "h": 1200
- },
- {
-  "date": "2026-11-06",
-  "amount": 92.87,
-  "firm": "Vest",
-  "file": "proofs/vest-2026-11-06-92_87.jpg",
+  "file": "proofs/vest-2026-11-11-278_87.jpg",
   "w": 1200,
   "h": 1200
  },
@@ -1570,6 +1538,22 @@ var PAYOUTS = [
   "file": "proofs/vest-2026-11-13-92_90.jpg",
   "w": 1200,
   "h": 1200
+ },
+ {
+  "date": "2026-11-14",
+  "amount": 92.87,
+  "firm": "Vest",
+  "file": "proofs/vest-2026-11-14-92_87.jpg",
+  "w": 1200,
+  "h": 1200
+ },
+ {
+  "date": "2026-11-14",
+  "amount": 92.83,
+  "firm": "Vest",
+  "file": "proofs/vest-2026-11-14-92_83.jpg",
+  "w": 1200,
+  "h": 1200
  }
 ];
 // Opened as the raw source (no payouts injected): say so instead of showing an empty page.
@@ -1597,7 +1581,7 @@ var TESTIMONIALS = [];
   var first = list.length ? list[list.length - 1].date : null;
   // Months from the first payout month to September 2026, inclusive (the "no model" period).
   var preMonths = first ? (2026 - +first.slice(0, 4)) * 12 + 9 - +first.slice(5, 7) + 1 : 1;
-  var SPENT = 5498, MODEL = '2026-10';   // 05/11 : + 1 425 $ d'évals Vest (100 × 14,25 $)
+  var SPENT = 5783, MODEL = '2026-10';   // 05/11 : + 1 425 $ d'évals Vest (100 × 14,25 $)
   // Certificates paid the same day for the same amount come from separate accounts.
   var same = {}; list.forEach(function (p) { var k = p.date + '|' + p.amount; same[k] = (same[k] || 0) + 1; });
   var big = list.slice().sort(function (a, b) { return b.amount - a.amount || (a.date < b.date ? 1 : -1); });
