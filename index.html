@@ -635,8 +635,8 @@ main.container::before { content: ''; position: absolute; top: 0; bottom: 0; lef
   <section id="payouts" class="sec">
     <div class="sh">
       <h2><span data-l="en"><span class="k">Proof</span><span class="sep">·</span>Prop firm payouts</span><span data-l="fr"><span class="k">Preuves</span><span class="sep">·</span>Payouts prop firms</span></h2>
-      <p class="sub" data-l="en">Prop firm payouts only, shown as the firms' certificates, not P&amp;L screenshots. My live account is private and isn't counted here. My first name and the certificate IDs are masked, nothing else is edited. Every new payout gets added.</p>
-      <p class="sub" data-l="fr">Uniquement des payouts de prop firms, montrés par les certificats des firmes, pas par des captures de P&amp;L. Mon compte live est privé et n'est pas compté ici. Mon prénom et les numéros de certificat sont masqués, rien d'autre n'est retouché. Chaque nouveau payout est ajouté.</p>
+      <p class="sub" data-l="en">Prop firm payouts only, shown as the firms' certificates, not P&amp;L screenshots. My live account is private and isn't counted here. My first name and most certificate IDs are masked; where a firm provides a public verification QR code, it is left visible. Nothing else is edited. Every new payout gets added.</p>
+      <p class="sub" data-l="fr">Uniquement des payouts de prop firms, montrés par les certificats des firmes, pas par des captures de P&amp;L. Mon compte live est privé et n'est pas compté ici. Mon prénom et la plupart des numéros de certificat sont masqués ; quand une firme fournit un QR code de vérification public, il reste visible. Rien d'autre n'est retouché. Chaque nouveau payout est ajouté.</p>
     </div>
     <div class="pay-grid">
       <div class="panel glass">
@@ -1782,7 +1782,7 @@ var TESTIMONIALS = [];
   var list = PAYOUTS.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
   var total = 0, purdia = 0, months = {}, pre = 0, oct = 0;
   list.forEach(function (p) {
-    total += p.amount; if (p.firm === 'Purdia') purdia += p.amount; // 90% split firm
+    total += p.amount; if (p.firm === 'Purdia' || p.firm === 'Lucid') purdia += p.amount; // 90% split firms
     var m = p.date.slice(0, 7); months[m] = (months[m] || 0) + p.amount;
     if (m < '2026-10') pre += p.amount; else if (m === '2026-10') oct += p.amount;
   });
@@ -1823,10 +1823,10 @@ var TESTIMONIALS = [];
     // Payout stats.
     set('spent', '~' + fmt(SPENT));
     var kept = total - purdia * 0.1, net = Math.round(kept / SPENT * 100);
-    // No firm names on the page. The totals are certificate amounts; one firm keeps a 10% split, given here so nothing reads as hidden.
+    // No firm names on the page. The totals are certificate amounts; two firms keep a 10% split, given here so nothing reads as hidden.
     set('netline', T(
-      'How to read the totals: certificate amounts, after eval fees. One firm keeps a 10% profit split: after it, about ' + fmtK(kept) + ', +' + net + '% on eval spend.',
-      'Comment lire les totaux : montants des certificats, après frais d\'éval. Une firme garde 10 % des gains : après ce partage, environ ' + fmtK(kept) + ', +' + net + ' % sur les évals.'));
+      'How to read the totals: certificate amounts, after eval fees. Two firms keep a 10% profit split: after it, about ' + fmtK(kept) + ', +' + net + '% on eval spend.',
+      'Comment lire les totaux : montants des certificats, après frais d\'éval. Deux firmes gardent 10 % des gains : après ce partage, environ ' + fmtK(kept) + ', +' + net + ' % sur les évals.'));
     // Monthly bars, every month since the first payout; the model months are highlighted.
     var narrow = window.matchMedia('(max-width: 600px)').matches;
     $('mchart').innerHTML = mkeys.map(function (k) {
